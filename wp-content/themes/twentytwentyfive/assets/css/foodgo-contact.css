@@ -1,0 +1,360 @@
+/* ==========================================================================
+   FOODGO CONTACT PAGE - ZEN-TECH GLASSMORPHISM (SCOPED)
+   ========================================================================== */
+
+/* Giới hạn toàn bộ CSS trong class cha để không làm vỡ giao diện Admin */
+
+.foodgo-contact-page {
+    --primary: #ff4d4f;
+    --primary-light: #fff1f0;
+    --secondary: #1d1d1f;
+    --bg: #f8f8fa;
+    --gradient: linear-gradient(135deg, #ff7875, #ff4d4f);
+}
+
+/* BASE */
+.foodgo-contact-page {
+    position: relative;
+    padding: 120px 0;
+    background:
+        radial-gradient(circle at top left, rgba(255,77,79,.10), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(255,120,117,.12), transparent 30%),
+        var(--bg);
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.foodgo-contact-page .container {
+    max-width: 1300px;
+    margin: auto;
+    padding: 0 20px;
+}
+
+/* GLASS */
+.foodgo-contact-page .glass-card {
+    background: rgba(255, 255, 255, .72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, .05);
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, .04),
+        0 2px 10px rgba(255, 77, 79, .03);
+}
+
+/* LAYOUT */
+.foodgo-contact-page .contact-layout {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 34px;
+    align-items: start;
+}
+
+/* LEFT FORM */
+.foodgo-contact-page .contact-form-wrapper {
+    border-radius: 36px;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.foodgo-contact-page .section-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(255, 77, 79, .08);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+}
+
+.foodgo-contact-page .contact-title {
+    font-size: 58px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--secondary);
+    margin-bottom: 20px;
+}
+
+.foodgo-contact-page .contact-description {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #666;
+    max-width: 620px;
+    margin-bottom: 40px;
+}
+
+/* FORM */
+.foodgo-contact-page .foodgo-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.foodgo-contact-page .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.foodgo-contact-page .form-group label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #444;
+}
+
+.foodgo-contact-page .form-group input,
+.foodgo-contact-page .form-group textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, .75);
+    border: 1px solid rgba(0, 0, 0, .06);
+    border-radius: 20px;
+    padding: 18px 22px;
+    font-size: 16px;
+    font-family: inherit;
+    color: #1d1d1f;
+    transition: .35s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .02);
+    box-sizing: border-box; /* Giúp tính toán kích thước chuẩn bao gồm cả padding */
+}
+
+.foodgo-contact-page .form-group input {
+    height: 58px; /* Cố định chiều cao cho ô input không bị bẹp */
+}
+
+.foodgo-contact-page .form-group textarea {
+    resize: none;
+    min-height: 180px;
+}
+
+.foodgo-contact-page .form-group input::placeholder,
+.foodgo-contact-page .form-group textarea::placeholder {
+    color: #999;
+}
+
+.foodgo-contact-page .form-group input:focus,
+.foodgo-contact-page .form-group textarea:focus {
+    border-color: rgba(255, 77, 79, .45);
+    box-shadow:
+        0 0 0 4px rgba(255, 77, 79, .08),
+        0 10px 30px rgba(255, 77, 79, .08);
+    background: #fff;
+}
+
+/* BUTTON */
+.foodgo-contact-page .contact-submit-btn {
+    position: relative;
+    height: 66px;
+    border: none;
+    border-radius: 999px;
+    background: var(--gradient);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    overflow: hidden;
+    transition: .35s ease;
+    box-shadow:
+        0 15px 35px rgba(255, 77, 79, .22);
+}
+
+.foodgo-contact-page .contact-submit-btn:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 22px 45px rgba(255, 77, 79, .28);
+}
+
+.foodgo-contact-page .contact-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, .55),
+        transparent
+    );
+    transform: skewX(-20deg);
+    transition: .8s;
+}
+
+.foodgo-contact-page .contact-submit-btn:hover::before {
+    left: 130%;
+}
+
+/* RIGHT */
+.foodgo-contact-page .contact-info-side {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* INFO CARD */
+.foodgo-contact-page .contact-info-card,
+.foodgo-contact-page .social-card {
+    border-radius: 32px;
+    padding: 40px;
+}
+
+.foodgo-contact-page .contact-info-card h2,
+.foodgo-contact-page .social-card h3 {
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: var(--secondary);
+    margin-bottom: 30px;
+}
+
+/* INFO ITEMS */
+.foodgo-contact-page .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+.foodgo-contact-page .info-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.foodgo-contact-page .info-icon {
+    width: 58px;
+    height: 58px;
+    min-width: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    font-size: 24px;
+    box-shadow:
+        0 8px 25px rgba(255, 77, 79, .12);
+}
+
+.foodgo-contact-page .info-content h4 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--secondary);
+    margin-bottom: 6px;
+}
+
+.foodgo-contact-page .info-content p {
+    color: #666;
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+/* SOCIAL */
+.foodgo-contact-page .social-card p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 28px;
+}
+
+.foodgo-contact-page .social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 30px;
+}
+
+.foodgo-contact-page .social-item {
+    height: 52px;
+    padding: 0 22px;
+    border-radius: 999px;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: #1d1d1f;
+    text-decoration: none;
+    transition: .3s;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .04);
+}
+
+.foodgo-contact-page .social-item:hover {
+    transform: translateY(-3px);
+    background: var(--gradient);
+    color: #fff;
+}
+
+/* MAP */
+.foodgo-contact-page .map-placeholder {
+    position: relative;
+    height: 240px;
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 77, 79, .12),
+            rgba(255, 255, 255, .65)
+        );
+    border: 1px solid rgba(255, 255, 255, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--secondary);
+    letter-spacing: -1px;
+}
+
+.foodgo-contact-page .map-glow {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 77, 79, .18);
+    filter: blur(50px);
+}
+
+/* MOBILE */
+@media(max-width: 991px) {
+    .foodgo-contact-page .contact-layout {
+        grid-template-columns: 1fr;
+    }
+    .foodgo-contact-page .contact-title {
+        font-size: 46px;
+    }
+}
+
+@media(max-width: 767px) {
+    .foodgo-contact-page {
+        padding: 90px 0;
+    }
+    .foodgo-contact-page .contact-form-wrapper,
+    .foodgo-contact-page .contact-info-card,
+    .foodgo-contact-page .social-card {
+        padding: 30px 24px;
+        border-radius: 28px;
+    }
+    .foodgo-contact-page .contact-title {
+        font-size: 38px;
+        line-height: 1.1;
+        letter-spacing: -1px;
+    }
+    .foodgo-contact-page .contact-description {
+        font-size: 15px;
+    }
+    .foodgo-contact-page .contact-submit-btn {
+        height: 60px;
+        font-size: 16px;
+    }
+    .foodgo-contact-page .map-placeholder {
+        height: 200px;
+        font-size: 22px;
+    }
+}

@@ -1,0 +1,16 @@
+[15-May-2026 05:25:26 UTC] Automatic updates starting...
+[15-May-2026 05:25:26 UTC]   Automatic plugin updates starting...
+[15-May-2026 05:25:26 UTC]   Automatic plugin updates complete.
+[15-May-2026 05:25:26 UTC] Automatic updates complete.
+[15-May-2026 06:36:08 UTC] PHP Parse error:  syntax error, unexpected single-quoted string ",", expecting ")" in /var/www/food.code/wp-content/themes/twentytwentyfive/functions.php on line 61
+[15-May-2026 06:36:08 UTC] PHP Notice:  Function _load_textdomain_just_in_time được gọi <strong>không chính xác</strong>. Tải bản dịch cho miền <code>twentytwentyfive</code> được kích hoạt quá sớm. Đây thường là dấu hiệu cho thấy một số mã trong plugin hoặc chủ đề chạy quá sớm. Bản dịch phải được tải tại hành động <code>init</code> hoặc sau đó. Vui lòng xem <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Hướng dẫn Debug trong WordPress</a> để biết thêm thông tin. (Thông điệp này đã được thêm vào trong phiên bản 6.7.0.) in /var/www/food.code/wp-includes/functions.php on line 6131
+[15-May-2026 06:36:08 UTC] PHP Warning:  Trying to access array offset on value of type bool in /var/www/food.code/wp-includes/class-wp-recovery-mode-email-service.php on line 367
+[15-May-2026 06:36:08 UTC] PHP Warning:  Trying to access array offset on value of type bool in /var/www/food.code/wp-includes/class-wp-recovery-mode-email-service.php on line 368
+[15-May-2026 06:36:09 UTC] PHP Parse error:  syntax error, unexpected single-quoted string ",", expecting ")" in /var/www/food.code/wp-content/themes/twentytwentyfive/functions.php on line 61
+[15-May-2026 06:36:11 UTC] PHP Parse error:  syntax error, unexpected single-quoted string ",", expecting ")" in /var/www/food.code/wp-content/themes/twentytwentyfive/functions.php on line 61
+[15-May-2026 06:36:11 UTC] PHP Parse error:  syntax error, unexpected single-quoted string ",", expecting ")" in /var/www/food.code/wp-content/themes/twentytwentyfive/functions.php on line 61
+[15-May-2026 06:36:23 UTC] PHP Parse error:  syntax error, unexpected single-quoted string ",", expecting ")" in /var/www/food.code/wp-content/themes/twentytwentyfive/functions.php on line 61
+[16-May-2026 05:59:51 UTC] Automatic updates starting...
+[16-May-2026 05:59:52 UTC]   Automatic plugin updates starting...
+[16-May-2026 05:59:52 UTC]   Automatic plugin updates complete.
+[16-May-2026 05:59:53 UTC] Automatic updates complete.

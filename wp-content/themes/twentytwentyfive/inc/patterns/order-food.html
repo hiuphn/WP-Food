@@ -1,0 +1,88 @@
+<!-- wp:group {"tagName":"section","className":"foodgo-order-page","layout":{"type":"constrained"}} -->
+<section class="wp-block-group foodgo-order-page">
+
+	<!-- wp:group {"className":"container","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group container">
+
+		<!-- ====================================== -->
+		<!-- HERO SECTION -->
+		<!-- ====================================== -->
+
+		<!-- wp:group {"className":"order-hero glass-card","layout":{"type":"constrained"}} -->
+		<div class="wp-block-group order-hero glass-card">
+
+			<!-- wp:paragraph {"className":"section-label"} -->
+			<p class="section-label">FOODGO ORDER</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:heading {"level":1,"className":"hero-title","style":{"typography":{"lineHeight":"1.1"}}} -->
+			<h1 class="wp-block-heading hero-title">Ăn ngon theo phong cách GenZ ✨</h1>
+			<!-- /wp:heading -->
+
+			<!-- wp:paragraph {"className":"hero-description"} -->
+			<p class="hero-description">Khám phá hàng ngàn món ăn premium với trải nghiệm Zen-Tech hiện đại và siêu
+				mượt.</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:group {"className":"search-wrapper","layout":{"type":"constrained"}} -->
+			<div class="wp-block-group search-wrapper">
+				<!-- wp:html -->
+				<div class="food-search">
+					<span class="search-icon">🔍</span>
+					<input type="text" id="food-search-input" placeholder="Tìm Pizza, Burger, Trà sữa..." />
+				</div>
+				<!-- /wp:html -->
+			</div>
+			<!-- /wp:group -->
+
+		</div>
+		<!-- /wp:group -->
+
+		<!-- ====================================== -->
+		<!-- CATEGORY TABS -->
+		<!-- ====================================== -->
+
+		<!-- wp:group {"className":"category-slider","layout":{"type":"constrained"}} -->
+		<div class="wp-block-group category-slider">
+
+			<!-- wp:html -->
+			<div class="category-list">
+				<button class="category-item active" data-category="all"><span>🔥</span> All</button>
+				<button class="category-item" data-category="pizza"><span>🍕</span> Pizza</button>
+				<button class="category-item" data-category="burger"><span>🍔</span> Burger</button>
+				<button class="category-item" data-category="drink"><span>🥤</span> Đồ uống</button>
+				<button class="category-item" data-category="healthy"><span>🥗</span> Healthy</button>
+				<button class="category-item" data-category="dessert"><span>🍰</span> Dessert</button>
+			</div>
+			<!-- /wp:html -->
+
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:shortcode -->
+		[foodgo_bento_menu]
+		<!-- /wp:shortcode -->
+
+	</div>
+	<!-- /wp:group -->
+
+
+	<!-- ====================================== -->
+	<!-- FLOATING CART WIDGET -->
+	<!-- ====================================== -->
+
+	<!-- wp:html -->
+	<a href="/gio-hang/" class="floating-cart" id="floating-cart" style="display: none;">
+		<div class="floating-cart-icon">
+			🛒
+			<span class="cart-count" id="cart-count-float">0</span>
+		</div>
+		<div class="floating-cart-info">
+			<span>Giỏ hàng</span>
+			<strong id="cart-total-price">0đ</strong>
+		</div>
+	</a>
+	<!-- /wp:html -->
+
+</section>
+<!-- /wp:group -->

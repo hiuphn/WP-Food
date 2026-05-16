@@ -1,0 +1,716 @@
+/* 
+ * FOODGO OFFICIAL CSS 
+ * Được tối ưu để khớp hoàn toàn với cấu trúc Block của WordPress
+ */
+
+/* PHẦN 1: CSS GỐC CỦA BẠN (GIỮ NGUYÊN) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #fff;
+            color: #111;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #eee;
+        }
+
+        .navbar {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ff4d4f;
+        }
+
+        .logo span {
+            color: #111;
+        }
+
+        .menu {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .menu a {
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .menu a:hover {
+            color: #ff4d4f;
+        }
+
+        .btn {
+            padding: 14px 26px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff4d4f, #ff7a45);
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(255, 77, 79, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* HERO */
+        .hero {
+            padding-top: 140px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: linear-gradient(135deg, #ff4d4f, #ff9966);
+            border-radius: 50%;
+            top: -250px;
+            right: -200px;
+            opacity: 0.12;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .hero-text h1 {
+            font-size: 68px;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+
+        .hero-text h1 span {
+            color: #ff4d4f;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 35px;
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .btn-outline {
+            padding: 14px 26px;
+            border-radius: 50px;
+            border: 2px solid #111;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #111;
+            color: white;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 620px;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.15));
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-18px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* STATS */
+        .stats {
+            margin-top: 40px;
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box h2 {
+            font-size: 36px;
+            color: #ff4d4f;
+        }
+
+        .stat-box p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* FEATURES */
+        .features {
+            padding: 100px 0;
+            background: #fafafa;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-title h2 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: #666;
+            font-size: 17px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 28px;
+            padding: 35px;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ff4d4f, #ff9966);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* FOOD */
+        .foods {
+            padding: 100px 0;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.07);
+            transition: 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .food-card img {
+            width: 100%;
+            height: 220px !important;
+            object-fit: cover;
+        }
+
+        .food-content {
+            padding: 25px;
+        }
+
+        .food-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .food-top h3 {
+            font-size: 22px;
+        }
+
+        .price {
+            color: #ff4d4f;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .food-content p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .food-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rating {
+            color: #ffaa00;
+            font-weight: 600;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 120px 0;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #ff4d4f, #ff7a45);
+            border-radius: 40px;
+            padding: 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            top: -150px;
+            right: -100px;
+        }
+
+        .cta-box h2 {
+            font-size: 52px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-box p {
+            font-size: 18px;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-box .btn {
+            background: white;
+            color: #ff4d4f;
+            box-shadow: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #111;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .footer-col p {
+            color: #aaa;
+            line-height: 1.8;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            border-top: 1px solid #222;
+            padding-top: 25px;
+            text-align: center;
+            color: #888;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:992px) {
+
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 52px;
+            }
+
+            .hero-buttons,
+            .stats {
+                justify-content: center;
+            }
+
+            .hero-image {
+                text-align: center;
+            }
+
+            .cta-box {
+                padding: 50px 30px;
+            }
+
+            .cta-box h2 {
+                font-size: 38px;
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .menu {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 42px;
+            }
+
+            .section-title h2 {
+                font-size: 36px;
+            }
+        }
+
+/* PHẦN 2: CÁC LỆNH "ÉP" CẤU TRÚC WORDPRESS PHẢI THEO CSS GỐC */
+
+/* Khử toàn bộ giới hạn của Theme mặc định */
+.wp-block-group.hero, 
+.wp-block-group.features, 
+.wp-block-group.foods, 
+.wp-block-group.cta,
+.wp-block-group.container,
+.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Đưa container về đúng chuẩn 1300px của bạn */
+.wp-block-group.container, .container {
+    width: 90% !important;
+    max-width: 1500px !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+/* Ép Grid hoạt động trên các khối Group của WP */
+.wp-block-group.hero-content {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 60px !important;
+}
+
+.wp-block-group.feature-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 30px !important;
+}
+
+.wp-block-group.food-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 30px !important;
+}
+
+/* Fix hiển thị cho Mobile */
+@media(max-width:992px) {
+    .wp-block-group.hero-content,
+    .wp-block-group.feature-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media(max-width:1200px) and (min-width:768px) {
+    .wp-block-group.feature-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+/* Tinh chỉnh cho các ô đều nhau */
+.feature-grid, .food-grid {
+    align-items: stretch !important; /* Ép các ô cao bằng nhau */
+}
+
+.feature-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+.feature-card p {
+    flex-grow: 1 !important; /* Đẩy nội dung lấp đầy khoảng trống */
+}
+
+.food-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+.food-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+}
+
+.food-content > p {
+    flex-grow: 1 !important; /* Đẩy nút Đặt món xuống đáy */
+}
+
+.food-bottom {
+    margin-top: auto !important; /* Chốt vị trí nút ở dưới cùng */
+}
+
+/* Fix icon Features cho chuẩn */
+.feature-icon {
+    flex-shrink: 0 !important;
+}
+
+/* SỬA LỖI HEADER */
+header {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+}
+
+/* Bù trừ cho thanh Admin Bar của WordPress */
+body.admin-bar header {
+    top: 32px !important;
+}
+
+@media screen and (max-width: 782px) {
+    body.admin-bar header {
+        top: 46px !important;
+    }
+}
+
+.navbar {
+    width: 90% !important;
+    max-width: 1300px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+/* Đảm bảo Logo, Menu, Button nằm đúng vị trí */
+.logo {
+    flex-shrink: 0 !important;
+}
+
+.menu {
+    flex-grow: 1 !important;
+    justify-content: center !important;
+}
+
+.header-button {
+    flex-shrink: 0 !important;
+    text-align: right !important;
+}
+
+/* Ẩn menu mobile mặc định của theme nếu có xung đột */
+.wp-block-navigation__responsive-container-open {
+    display: none !important;
+}
+
+/* STYLE TRANG GIỎ HÀNG */
+.cart-page {
+    padding: 100px 0;
+    background: #fafafa;
+    min-height: 70vh;
+}
+
+.cart-container-inner {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.05);
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.item-info {
+    flex-grow: 1;
+}
+
+.item-info h3 {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.remove-item {
+    background: #fff5f5;
+    color: #ff4d4f;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.remove-item:hover {
+    background: #ff4d4f;
+    color: white;
+}
+
+.cart-summary {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+    text-align: right;
+}
+
+.summary-row {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.total-price {
+    color: #ff4d4f;
+    margin-left: 15px;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 18px;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.back-to-menu {
+    display: block;
+    text-align: center;
+    color: #666;
+    font-weight: 500;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 40px 0;
+    font-size: 18px;
+    color: #888;
+}
+
+.empty-cart a {
+    color: #ff4d4f;
+    font-weight: 600;
+}

@@ -1,0 +1,44 @@
+/* 
+ * ÉP GIAO DIỆN ADMIN ĐẸP NHƯ TRANG NGOÀI
+ */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap');
+
+body, .editor-styles-wrapper {
+    font-family: 'Poppins', sans-serif !important;
+    background-color: #fdfdfd !important;
+}
+
+/* Fix Story Content in Editor */
+.about-content {
+    padding: 60px 0 !important;
+    background: white !important;
+    border-radius: 40px !important;
+    margin: 40px 0 !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05) !important;
+}
+
+.about-content h2 {
+    font-size: 42px !important;
+    font-weight: 900 !important;
+    color: #111 !important;
+    margin-bottom: 20px !important;
+}
+
+.about-content p {
+    font-size: 17px !important;
+    line-height: 1.8 !important;
+    color: #555 !important;
+}
+
+.radius-md img {
+    border-radius: 30px !important;
+    box-shadow: 0 15px 40px rgba(255, 77, 79, 0.15) !important;
+}
+
+/* Page Header in Editor */
+.page-header {
+    background: linear-gradient(135deg, #fff5f5, #ffffff) !important;
+    padding: 80px 0 !important;
+    border-radius: 0 0 50px 50px !important;
+    text-align: center !important;
+}

@@ -1,0 +1,77 @@
+/* 
+ * INTERNAL PAGES - PREMIUM GENZ STYLE
+ */
+
+/* GLASS EFFECTS */
+.glass-section {
+    background: radial-gradient(circle at 10% 20%, rgba(255, 77, 79, 0.03) 0%, transparent 40%);
+    padding: 100px 0 !important;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 5px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 35px !important;
+    padding: 20px 40px !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05) !important;
+}
+
+/* TYPOGRAPHY */
+.section-label {
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    letter-spacing: 3px !important;
+    color: #ff4d4f !important;
+    margin-bottom: 20px !important;
+    text-transform: uppercase !important;
+}
+
+.hero-title {
+    font-size: 60px !important;
+    font-weight: 900 !important;
+    line-height: 1.1 !important;
+    margin-bottom: 30px !important;
+    color: #111 !important;
+}
+
+.hero-description {
+    font-size: 20px !important;
+    color: #666 !important;
+    line-height: 1.6 !important;
+    margin-bottom: 40px !important;
+}
+
+/* SECTION HEADING */
+.section-heading {
+    text-align: center !important;
+    margin-bottom: 60px !important;
+}
+
+.section-heading h2 {
+    font-size: 42px !important;
+    font-weight: 800 !important;
+}
+
+/* STORY IMAGE */
+.story-image img {
+    border-radius: 40px !important;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.1) !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* STATS OVERRIDE */
+.about-stats .stats {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
+    text-align: center !important;
+}
+
+.about-stats h2 {
+    font-size: 48px !important;
+    color: #ff4d4f !important;
+    margin-bottom: 10px !important;
+}

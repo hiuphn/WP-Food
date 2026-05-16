@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodGo - Đặt Đồ Ăn Online</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #fff;
+            color: #111;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #eee;
+        }
+
+        .navbar {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ff4d4f;
+        }
+
+        .logo span {
+            color: #111;
+        }
+
+        .menu {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .menu a {
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .menu a:hover {
+            color: #ff4d4f;
+        }
+
+        .btn {
+            padding: 14px 26px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff4d4f, #ff7a45);
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(255, 77, 79, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* HERO */
+        .hero {
+            padding-top: 140px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: linear-gradient(135deg, #ff4d4f, #ff9966);
+            border-radius: 50%;
+            top: -250px;
+            right: -200px;
+            opacity: 0.12;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .hero-text h1 {
+            font-size: 68px;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+
+        .hero-text h1 span {
+            color: #ff4d4f;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 35px;
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .btn-outline {
+            padding: 14px 26px;
+            border-radius: 50px;
+            border: 2px solid #111;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #111;
+            color: white;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 620px;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.15));
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-18px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* STATS */
+        .stats {
+            margin-top: 40px;
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box h2 {
+            font-size: 36px;
+            color: #ff4d4f;
+        }
+
+        .stat-box p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* FEATURES */
+        .features {
+            padding: 100px 0;
+            background: #fafafa;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-title h2 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: #666;
+            font-size: 17px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 28px;
+            padding: 35px;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ff4d4f, #ff9966);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* FOOD */
+        .foods {
+            padding: 100px 0;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.07);
+            transition: 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .food-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .food-content {
+            padding: 25px;
+        }
+
+        .food-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .food-top h3 {
+            font-size: 22px;
+        }
+
+        .price {
+            color: #ff4d4f;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .food-content p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .food-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rating {
+            color: #ffaa00;
+            font-weight: 600;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 120px 0;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #ff4d4f, #ff7a45);
+            border-radius: 40px;
+            padding: 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            top: -150px;
+            right: -100px;
+        }
+
+        .cta-box h2 {
+            font-size: 52px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-box p {
+            font-size: 18px;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-box .btn {
+            background: white;
+            color: #ff4d4f;
+            box-shadow: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #111;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .footer-col p {
+            color: #aaa;
+            line-height: 1.8;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            border-top: 1px solid #222;
+            padding-top: 25px;
+            text-align: center;
+            color: #888;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:992px) {
+
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 52px;
+            }
+
+            .hero-buttons,
+            .stats {
+                justify-content: center;
+            }
+
+            .hero-image {
+                text-align: center;
+            }
+
+            .cta-box {
+                padding: 50px 30px;
+            }
+
+            .cta-box h2 {
+                font-size: 38px;
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .menu {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 42px;
+            }
+
+            .section-title h2 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container navbar">
+
+            <div class="logo">
+                Food<span>Go</span>
+            </div>
+
+            <div class="menu">
+                <a href="#">Trang chủ</a>
+                <a href="#">Giới thiệu</a>
+                <a href="#">Giỏ hành</a>
+                <a href="#">Tài khoản</a>
+                <a href="#">Đặt món</a>
+                <a href="#">Liên hệ</a>
+            </div>
+
+            <a href="#" class="btn">Đặt Ngay</a>
+
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container hero-content">
+
+            <div class="hero-text">
+                <h1>
+                    Đặt đồ ăn <span>siêu nhanh</span> dành cho GenZ
+                </h1>
+
+                <p>
+                    Hàng ngàn món ngon từ các nhà hàng hot nhất.
+                    Giao nhanh trong 30 phút với trải nghiệm hiện đại, trẻ trung và cực mượt.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#" class="btn">Khám Phá Ngay</a>
+                    <a href="#" class="btn-outline">Xem Menu</a>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <h2>12K+</h2>
+                        <p>Đơn hàng mỗi ngày</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <h2>500+</h2>
+                        <p>Nhà hàng đối tác</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <h2>4.9★</h2>
+                        <p>Đánh giá khách hàng</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop"
+                    alt="">
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+
+        <div class="container">
+
+            <div class="section-title">
+                <h2>Tại sao chọn FoodGo?</h2>
+                <p>Trải nghiệm đặt đồ ăn hiện đại dành cho giới trẻ</p>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Giao siêu tốc</h3>
+                    <p>
+                        Hệ thống shipper phủ rộng giúp giao hàng nhanh chóng chỉ trong vài phút.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔥</div>
+                    <h3>Deal cực hot</h3>
+                    <p>
+                        Hàng trăm voucher và ưu đãi hấp dẫn cập nhật mỗi ngày.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🍔</div>
+                    <h3>Menu đa dạng</h3>
+                    <p>
+                        Từ trà sữa, pizza, burger đến món healthy đều có đủ.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Thanh toán dễ dàng</h3>
+                    <p>
+                        Hỗ trợ Momo, ZaloPay, VNPay, thẻ ngân hàng và COD.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FOOD -->
+    <section class="foods">
+
+        <div class="container">
+
+            <div class="section-title">
+                <h2>Món ăn nổi bật</h2>
+                <p>Những món được order nhiều nhất hôm nay</p>
+            </div>
+
+            <div class="food-grid">
+
+                <div class="food-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1200&auto=format&fit=crop">
+
+                    <div class="food-content">
+
+                        <div class="food-top">
+                            <h3>Pizza Hải Sản</h3>
+                            <div class="price">149K</div>
+                        </div>
+
+                        <p>
+                            Đế bánh giòn, topping hải sản tươi ngon cùng sốt đặc biệt.
+                        </p>
+
+                        <div class="food-bottom">
+                            <span class="rating">★ 4.9</span>
+                            <a href="#" class="btn">Đặt món</a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="food-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1200&auto=format&fit=crop">
+
+                    <div class="food-content">
+
+                        <div class="food-top">
+                            <h3>Burger Bò Mỹ</h3>
+                            <div class="price">99K</div>
+                        </div>
+
+                        <p>
+                            Thịt bò đậm vị kết hợp phô mai tan chảy cực cuốn.
+                        </p>
+
+                        <div class="food-bottom">
+                            <span class="rating">★ 4.8</span>
+                            <a href="#" class="btn">Đặt món</a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="food-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop">
+
+                    <div class="food-content">
+
+                        <div class="food-top">
+                            <h3>Mì Cay Hàn Quốc</h3>
+                            <div class="price">79K</div>
+                        </div>
+
+                        <p>
+                            Nước dùng đậm đà chuẩn vị Hàn, topping siêu đầy đặn.
+                        </p>
+
+                        <div class="food-bottom">
+                            <span class="rating">★ 5.0</span>
+                            <a href="#" class="btn">Đặt món</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+
+        <div class="container">
+
+            <div class="cta-box">
+
+                <h2>
+                    Ăn ngon chưa bao giờ dễ đến vậy
+                </h2>
+
+                <p>
+                    Tải app ngay để nhận voucher giảm 50% cho đơn đầu tiên.
+                </p>
+
+                <a href="#" class="btn">
+                    Tải Ứng Dụng
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="container">
+
+            <div class="footer-grid">
+
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        FoodGo
+                    </div>
+
+                    <p>
+                        Nền tảng đặt đồ ăn hiện đại dành cho giới trẻ năng động.
+                    </p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Khám phá</h4>
+
+                    <div class="footer-links">
+                        <a href="#">Món ăn</a>
+                        <a href="#">Nhà hàng</a>
+                        <a href="#">Ưu đãi</a>
+                        <a href="#">Blog</a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Hỗ trợ</h4>
+
+                    <div class="footer-links">
+                        <a href="#">Trung tâm trợ giúp</a>
+                        <a href="#">Chính sách</a>
+                        <a href="#">Điều khoản</a>
+                        <a href="#">Liên hệ</a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Theo dõi</h4>
+
+                    <div class="footer-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">TikTok</a>
+                        <a href="#">YouTube</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="copyright">
+                © 2026 FoodGo. All Rights Reserved.
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

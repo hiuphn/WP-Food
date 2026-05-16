@@ -1,0 +1,370 @@
+/* HERO */
+.hero {
+    padding-top: 140px !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.hero::before {
+    content: "" !important;
+    position: absolute !important;
+    width: 700px !important;
+    height: 700px !important;
+    background: linear-gradient(135deg, #ff4d4f, #ff9966) !important;
+    border-radius: 50% !important;
+    top: -250px !important;
+    right: -200px !important;
+    opacity: 0.12 !important;
+}
+
+.hero-content {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    align-items: center !important;
+    gap: 60px !important;
+    width: 100% !important;
+}
+
+.hero-text h1 {
+    font-size: 68px !important;
+    line-height: 1.1 !important;
+    margin-bottom: 25px !important;
+    font-weight: 800 !important;
+}
+
+.hero-text h1 span {
+    color: #ff4d4f !important;
+}
+
+.hero-text p {
+    font-size: 18px !important;
+    color: #666 !important;
+    line-height: 1.8 !important;
+    margin-bottom: 35px !important;
+    max-width: 600px !important;
+}
+
+.hero-buttons {
+    display: flex !important;
+    gap: 18px !important;
+    flex-wrap: wrap !important;
+}
+
+.hero-image {
+    position: relative !important;
+}
+
+.hero-image img {
+    width: 100% !important;
+    max-width: 620px !important;
+    animation: float 4s ease-in-out infinite !important;
+    filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.15)) !important;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+    100% { transform: translateY(0); }
+}
+
+/* STATS */
+.stats {
+    margin-top: 40px !important;
+    display: flex !important;
+    gap: 40px !important;
+    flex-wrap: wrap !important;
+}
+
+.stat-box h2 {
+    font-size: 36px !important;
+    color: #ff4d4f !important;
+}
+
+.stat-box p {
+    color: #666 !important;
+    margin-top: 5px !important;
+}
+
+/* FEATURES */
+.features {
+    padding: 100px 0 !important;
+    background: #fafafa !important;
+}
+
+.section-title {
+    text-align: center !important;
+    margin-bottom: 70px !important;
+}
+
+.section-title h2 {
+    font-size: 48px !important;
+    margin-bottom: 15px !important;
+}
+
+.section-title p {
+    color: #666 !important;
+    font-size: 17px !important;
+}
+
+.feature-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+    gap: 30px !important;
+}
+
+.feature-card {
+    background: white !important;
+    border-radius: 28px !important;
+    padding: 35px !important;
+    transition: 0.3s !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+}
+
+.feature-icon {
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 20px !important;
+    background: linear-gradient(135deg, #ff4d4f, #ff9966) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 30px !important;
+    margin-bottom: 25px !important;
+    color: white !important;
+}
+
+.feature-card h3 {
+    margin-bottom: 15px !important;
+    font-size: 24px !important;
+}
+
+.feature-card p {
+    color: #666 !important;
+    line-height: 1.7 !important;
+}
+
+/* FOOD */
+.foods {
+    padding: 100px 0 !important;
+}
+
+.food-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 30px !important;
+}
+
+.food-card {
+    background: white !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.07) !important;
+    transition: 0.3s !important;
+}
+
+.food-card img {
+    width: 100% !important;
+    height: 220px !important;
+    object-fit: cover !important;
+}
+
+.food-content {
+    padding: 25px !important;
+}
+
+.food-top {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 15px !important;
+}
+
+.food-top h3 {
+    font-size: 22px !important;
+}
+
+.price {
+    color: #ff4d4f !important;
+    font-weight: 700 !important;
+    font-size: 22px !important;
+}
+
+/* CTA */
+.cta-box {
+    background: linear-gradient(135deg, #ff4d4f, #ff7a45) !important;
+    border-radius: 40px !important;
+    padding: 80px !important;
+    text-align: center !important;
+    color: white !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.cta-box h2 {
+    font-size: 52px !important;
+    margin-bottom: 20px !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.cta-box p {
+    font-size: 18px !important;
+    margin-bottom: 35px !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* RESPONSIVE */
+@media(max-width:992px) {
+    .hero-content { grid-template-columns: 1fr !important; }
+    .hero-text { text-align: center !important; }
+    .hero-text h1 { font-size: 52px !important; }
+    .hero-buttons, .stats { justify-content: center !important; }
+    .hero-image { text-align: center !important; }
+    .cta-box h2 { font-size: 38px !important; }
+}
+
+
+/* ==========================================================================
+   FOOD LISTING - DYNAMIC GRID
+   ========================================================================== */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.food-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.food-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(255, 77, 79, 0.15);
+}
+
+.food-card img {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.food-card:hover img {
+    transform: scale(1.08);
+}
+
+.food-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.food-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.food-top h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.6em; /* Luôn giữ khoảng trống cho 2 dòng */
+}
+
+.food-top .price {
+    margin: 0;
+    color: #ff4d4f;
+    font-weight: 800;
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+.food-content > p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 3em;
+}
+
+.food-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Đẩy xuống đáy card */
+}
+
+.rating {
+    font-weight: 600;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.food-card .btn.add-to-cart {
+    padding: 10px 22px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 77, 79, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.food-card .btn.add-to-cart:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
+}
+
+/* TEAM GRID */
+.team-grid {
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 30px !important;
+}
+
+.team-card {
+    text-align: center !important;
+}
+
+.team-card img {
+    width: 100% !important;
+    height: 270px !important;
+    object-fit: cover !important;
+    border-radius: 25px !important;
+    margin-bottom: 20px !important;
+}
+
+@media (max-width: 768px) {
+    .hero-title { font-size: 40px !important; }
+    .team-grid { grid-template-columns: 1fr !important; }
+    .about-stats .stats { grid-template-columns: 1fr !important; }
+}
