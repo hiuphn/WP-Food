@@ -15,7 +15,7 @@
 /* BASE */
 .foodgo-contact-page {
     position: relative;
-    padding: 120px 0;
+    padding: 180px 0 120px 0; /* Tăng padding top để không bị đè bởi Header */
     background:
         radial-gradient(circle at top left, rgba(255,77,79,.10), transparent 25%),
         radial-gradient(circle at bottom right, rgba(255,120,117,.12), transparent 30%),
@@ -28,6 +28,8 @@
     max-width: 1300px;
     margin: auto;
     padding: 0 20px;
+    margin-top: 110px !important;
+    margin-bottom: 30px !important;
 }
 
 /* GLASS */
@@ -115,7 +117,6 @@
     background: rgba(255, 255, 255, .75);
     border: 1px solid rgba(0, 0, 0, .06);
     border-radius: 20px;
-    padding: 18px 22px;
     font-size: 16px;
     font-family: inherit;
     color: #1d1d1f;
@@ -125,12 +126,16 @@
 }
 
 .foodgo-contact-page .form-group input {
-    height: 58px; /* Cố định chiều cao cho ô input không bị bẹp */
+    height: 58px; /* Cố định chiều cao */
+    padding: 0 22px !important; /* Dùng padding 0 để line-height căn giữa chữ */
+    line-height: 56px !important; /* Căn giữa chữ theo chiều dọc */
 }
 
 .foodgo-contact-page .form-group textarea {
+    padding: 22px !important; /* Thêm !important để chắc chắn nhận padding */
     resize: none;
     min-height: 180px;
+    line-height: 1.6 !important;
 }
 
 .foodgo-contact-page .form-group input::placeholder,
