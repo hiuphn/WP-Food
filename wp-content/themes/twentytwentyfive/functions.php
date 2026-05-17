@@ -292,7 +292,12 @@ function foodgo_handle_checkout()
         $order_details .= "- " . $item['name'] . " x " . $item['quantity'] . " (" . number_format($subtotal, 0, ',', '.') . "đ)\n";
     }
 
-    $order_details .= "\nTổng cộng: " . number_format($total, 0, ',', '.') . "đ";
+    $shipping = $total >= 400000 ? 0 : 25000;
+    $final_total = $total + $shipping;
+
+    $order_details .= "\nTạm tính: " . number_format($total, 0, ',', '.') . "đ\n";
+    $order_details .= "Phí vận chuyển: " . ($shipping === 0 ? 'Freeship' : number_format($shipping, 0, ',', '.') . 'đ') . "\n";
+    $order_details .= "Tổng cộng: " . number_format($final_total, 0, ',', '.') . "đ";
 
     // Tạo bài viết mới trong CPT foodgo_order
     $order_id = wp_insert_post(array(
@@ -303,7 +308,7 @@ function foodgo_handle_checkout()
     ));
 
     if ($order_id) {
-        update_post_meta($order_id, '_order_total', $total);
+        update_post_meta($order_id, '_order_total', $final_total);
         update_post_meta($order_id, '_order_items_json', $cart_data);
         update_post_meta($order_id, '_billing_name', $name);
         update_post_meta($order_id, '_billing_phone', $phone);
@@ -553,6 +558,28 @@ add_shortcode('foodgo_product_detail', 'foodgo_render_product_detail_shortcode')
  * HIỂN THỊ TRANG THANH TOÁN (Shortcode)
  */
 function foodgo_render_checkout_shortcode() {
+    if (!is_user_logged_in()) {
+        ob_start();
+        ?>
+        <div class="fg-checkout-page" style="padding: 160px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
+            <div class="fg-container" style="max-width: 600px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important; text-align: center !important;">
+                <div style="background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important;">
+                    <div style="font-size: 60px !important; margin-bottom: 20px !important;">🔒</div>
+                    <h2 style="font-size: 28px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 10px !important;">Bạn chưa đăng nhập</h2>
+                    <p style="color: #666 !important; font-size: 16px !important; margin-bottom: 30px !important;">Vui lòng đăng nhập tài khoản để tiếp tục thanh toán đơn hàng.</p>
+                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; height: 50px !important; padding: 0 30px !important; border-radius: 999px !important; background: linear-gradient(135deg, #ff7875, #ff4d4f) !important; color: #fff !important; text-decoration: none !important; font-weight: 700 !important; box-shadow: 0 10px 20px rgba(255, 77, 79, 0.15) !important;">
+                        Đăng nhập ngay
+                    </a>
+                    <div style="margin-top: 20px !important;">
+                        <a href="/dat-mon" style="color: #666 !important; text-decoration: none !important; font-size: 14px !important;">Quay lại đặt món</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+    
     ob_start();
     ?>
     <div class="fg-checkout-page" style="padding: 160px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
@@ -622,7 +649,7 @@ function foodgo_render_checkout_shortcode() {
                     
                     <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 15px !important;">
                         <span style="color: #666 !important;">Phí vận chuyển:</span>
-                        <span style="font-weight: 700 !important; color: #1d1d1f !important;">Freeship</span>
+                        <span id="fg-checkout-shipping" style="font-weight: 700 !important; color: #1d1d1f !important;">Freeship</span>
                     </div>
                     
                     <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 30px !important; font-size: 20px !important; font-weight: 800 !important;">
@@ -643,6 +670,7 @@ function foodgo_render_checkout_shortcode() {
         document.addEventListener('DOMContentLoaded', function() {
             const itemsContainer = document.getElementById('fg-checkout-items');
             const subtotalEl = document.getElementById('fg-checkout-subtotal');
+            const shippingEl = document.getElementById('fg-checkout-shipping');
             const totalEl = document.getElementById('fg-checkout-total');
             const submitBtn = document.getElementById('fg-submit-order');
             
@@ -682,8 +710,13 @@ function foodgo_render_checkout_shortcode() {
                 itemsContainer.appendChild(itemEl);
             });
             
+            // Tính phí ship
+            const shipping = total >= 400000 ? 0 : 25000;
+            const finalTotal = total + shipping;
+            
             subtotalEl.textContent = total.toLocaleString('vi-VN') + '₫';
-            totalEl.textContent = total.toLocaleString('vi-VN') + '₫';
+            shippingEl.textContent = shipping === 0 ? 'Freeship' : shipping.toLocaleString('vi-VN') + '₫';
+            totalEl.textContent = finalTotal.toLocaleString('vi-VN') + '₫';
             
             // Xử lý đặt hàng
             submitBtn.addEventListener('click', function() {

@@ -27,10 +27,9 @@
 
 		<!-- wp:social-links {"iconColor":"contrast","className":"has-icon-color is-style-logos-only","layout":{"type":"flex","justifyContent":"center"}} -->
 		<ul class="wp-block-social-links has-icon-color is-style-logos-only">
-			<!-- wp:social-link {"url":"#","service":"twitter"} /-->
 			<!-- wp:social-link {"url":"#","service":"facebook"} /-->
 			<!-- wp:social-link {"url":"#","service":"instagram"} /-->
-			<!-- wp:social-link {"url":"#","service":"pinterest"} /-->
+			<!-- wp:social-link {"url":"#","service":"tiktok"} /-->
 		</ul>
 		<!-- /wp:social-links -->
 	</div>

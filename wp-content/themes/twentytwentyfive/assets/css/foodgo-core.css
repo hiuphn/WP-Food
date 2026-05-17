@@ -49,7 +49,7 @@ a {
     display: inline-block !important;
     border: none !important;
     cursor: pointer !important;
-    padding: 0 !important; /* Xóa padding ở div ngoài */
+    padding: 5px !important; /* Xóa padding ở div ngoài */
     overflow: hidden !important;
 }
 

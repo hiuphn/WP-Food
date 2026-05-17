@@ -7,6 +7,14 @@ console.log("🚀 FoodGo Cart Engine: Loading...");
         // 1. Khởi tạo dữ liệu
         let cart = JSON.parse(localStorage.getItem('foodgo_cart')) || [];
         
+        // Xóa giỏ hàng khi người dùng bấm Đăng xuất
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (link && link.href.includes('action=logout')) {
+                localStorage.removeItem('foodgo_cart');
+            }
+        });
+
         const cartCountElements = document.querySelectorAll('.cart-count');
         const cartItemsContainer = document.getElementById('cart-items');
         const subtotalElement = document.getElementById('cart-subtotal');
