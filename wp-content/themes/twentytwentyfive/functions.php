@@ -388,13 +388,17 @@ function foodgo_render_menu_shortcode()
             $rating = get_post_meta(get_the_ID(), '_food_rating', true) ?: '4.8';
         ?>
             <div class="food-card">
-                <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
-                <div class="food-content">
-                    <div class="food-top">
-                        <h3><?php the_title(); ?></h3>
-                        <p class="price"><?php echo number_format($price, 0, ',', '.'); ?>đ</p>
+                <a href="<?php the_permalink(); ?>" style="text-decoration: none; color: inherit; display: block;">
+                    <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
+                    <div class="food-content">
+                        <div class="food-top">
+                            <h3><?php the_title(); ?></h3>
+                            <p class="price"><?php echo number_format($price, 0, ',', '.'); ?>đ</p>
+                        </div>
+                        <p><?php echo wp_trim_words(get_the_content(), 15); ?></p>
                     </div>
-                    <p><?php echo wp_trim_words(get_the_content(), 15); ?></p>
+                </a>
+                <div class="food-content" style="padding-top: 0 !important;">
                     <div class="food-bottom">
                         <span class="rating"><?php echo $rating; ?>★</span>
                         <p class="btn add-to-cart">Đặt món</p>
