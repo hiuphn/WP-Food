@@ -759,6 +759,11 @@ function foodgo_render_thankyou_shortcode() {
     $total = get_post_meta($order_id, '_order_total', true);
     $payment_method = get_post_meta($order_id, '_payment_method', true);
     $name = get_post_meta($order_id, '_billing_name', true);
+    $phone = get_post_meta($order_id, '_billing_phone', true);
+    $address = get_post_meta($order_id, '_billing_address', true);
+    $notes = get_post_meta($order_id, '_billing_notes', true);
+    $items_json = get_post_meta($order_id, '_order_items_json', true);
+    $items = json_decode($items_json, true) ?: [];
     
     // Tạo link VietQR nếu là chuyển khoản hoặc COD muốn trả trước
     $bank_id = 'OCB';
@@ -790,9 +795,33 @@ function foodgo_render_thankyou_shortcode() {
                         <span style="color: #666 !important;">Tổng tiền:</span>
                         <span style="font-weight: 700 !important; color: #ff4d4f !important;"><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
                     </div>
-                    <div style="display: flex !important; justify-content: space-between !important;">
+                    <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 20px !important;">
                         <span style="color: #666 !important;">Phương thức:</span>
                         <span style="font-weight: 700 !important; color: #1d1d1f !important;"><?php echo $payment_method === 'cod' ? 'COD (Tiền mặt)' : 'Chuyển khoản'; ?></span>
+                    </div>
+                    
+                    <div style="border-top: 1px solid rgba(0,0,0,0.05) !important; padding-top: 15px !important; margin-bottom: 15px !important;">
+                        <h3 style="font-size: 16px !important; font-weight: 700 !important; color: #1d1d1f !important; margin-bottom: 10px !important;">Thông tin người đặt:</h3>
+                        <div style="font-size: 14px !important; color: #666 !important; line-height: 1.6 !important;">
+                            <strong>Họ tên:</strong> <?php echo esc_html($name); ?><br>
+                            <strong>Số điện thoại:</strong> <?php echo esc_html($phone); ?><br>
+                            <strong>Địa chỉ:</strong> <?php echo esc_html($address); ?><br>
+                            <?php if ($notes) : ?>
+                                <strong>Ghi chú:</strong> <?php echo esc_html($notes); ?><br>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid rgba(0,0,0,0.05) !important; padding-top: 15px !important;">
+                        <h3 style="font-size: 16px !important; font-weight: 700 !important; color: #1d1d1f !important; margin-bottom: 10px !important;">Sản phẩm đã đặt:</h3>
+                        <div style="font-size: 14px !important; color: #666 !important;">
+                            <?php foreach ($items as $item) : ?>
+                                <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 8px !important;">
+                                    <span><?php echo esc_html($item['name']); ?> x <?php echo $item['quantity']; ?></span>
+                                    <span style="font-weight: 700 !important; color: #333 !important;"><?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?>₫</span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
                 
