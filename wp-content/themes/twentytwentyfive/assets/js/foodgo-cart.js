@@ -191,12 +191,16 @@ console.log("🚀 FoodGo Cart Engine: Loading...");
 
                     console.log('📦 Đang thêm:', name, price.toLocaleString('vi-VN') + 'đ');
 
+                    // Tìm số lượng (nếu có input)
+                    const qtyInput = foodCard.querySelector('input[type="text"]') || foodCard.querySelector('input[type="number"]');
+                    const quantity = qtyInput ? parseInt(qtyInput.value) : 1;
+
                     // Kiểm tra xem món đã có trong giỏ chưa
                     const existingItem = cart.find(item => item.name === name);
                     if (existingItem) {
-                        existingItem.quantity++;
+                        existingItem.quantity += quantity;
                     } else {
-                        cart.push({ name, price, image, quantity: 1 });
+                        cart.push({ name, price, image, quantity: quantity });
                     }
 
                     // Hiệu ứng phản hồi cho người dùng
@@ -217,46 +221,13 @@ console.log("🚀 FoodGo Cart Engine: Loading...");
                 }
             }
 
-            // Xử lý nút thanh toán
+            // Xử lý nút thanh toán (Chuyển hướng sang trang checkout)
             if (e.target.closest('#checkout-btn')) {
                 if (cart.length === 0) {
                     alert('Giỏ hàng của bạn đang trống!');
                     return;
                 }
-
-                const btn = e.target.closest('#checkout-btn');
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '<a>Đang xử lý... ⏳</a>';
-                btn.style.pointerEvents = 'none';
-
-                // Gửi dữ liệu về Server bằng AJAX
-                const formData = new FormData();
-                formData.append('action', 'foodgo_checkout');
-                formData.append('cart', JSON.stringify(cart));
-
-                fetch(foodgo_vars.ajax_url, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(res => {
-                    if (res.success) {
-                        alert('🎉 Đặt hàng thành công! Đơn hàng của bạn đã được lưu vào hệ thống.');
-                        cart = []; // Xóa giỏ hàng
-                        updateUI();
-                        window.location.href = '/'; // Quay về trang chủ
-                    } else {
-                        alert('❌ Lỗi: ' + res.data);
-                    }
-                })
-                .catch(err => {
-                    console.error('Lỗi thanh toán:', err);
-                    alert('❌ Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại!');
-                })
-                .finally(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.style.pointerEvents = 'auto';
-                });
+                window.location.href = '/thanh-toan';
             }
         });
 
@@ -272,6 +243,25 @@ console.log("🚀 FoodGo Cart Engine: Loading...");
                 }
             });
         }
+
+        // 7. Lắng nghe sự kiện cộng trừ số lượng ở trang chi tiết
+        document.addEventListener('click', function(e) {
+            const btn = e.target;
+            if (btn.closest('.fg-quantity')) {
+                const input = btn.closest('.fg-quantity').querySelector('input');
+                if (!input) return;
+                
+                let val = parseInt(input.value) || 1;
+                
+                if (btn.textContent === '+') {
+                    val++;
+                } else if (btn.textContent === '-') {
+                    if (val > 1) val--;
+                }
+                
+                input.value = val;
+            }
+        });
 
         // Chạy lần đầu
         updateUI();

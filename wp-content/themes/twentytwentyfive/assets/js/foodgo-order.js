@@ -33,6 +33,16 @@
                     });
                 });
             });
+
+            // Tự động kích hoạt danh mục từ URL nếu có
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            if (categoryParam) {
+                const targetButton = Array.from(categoryButtons).find(btn => btn.dataset.category.toLowerCase() === categoryParam.toLowerCase());
+                if (targetButton) {
+                    targetButton.click(); // Giả lập click để vừa active vừa lọc SP
+                }
+            }
         }
 
         if (searchInput) {

@@ -266,6 +266,11 @@ function foodgo_handle_checkout()
 {
     // Nhận dữ liệu từ JS
     $cart_data = isset($_POST['cart']) ? $_POST['cart'] : '';
+    $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
+    $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+    $address = isset($_POST['address']) ? sanitize_text_field($_POST['address']) : '';
+    $notes = isset($_POST['notes']) ? sanitize_textarea_field($_POST['notes']) : '';
+    $payment_method = isset($_POST['payment_method']) ? sanitize_text_field($_POST['payment_method']) : 'cod';
 
     if (empty($cart_data)) {
         wp_send_json_error('Giỏ hàng trống!');
@@ -273,8 +278,14 @@ function foodgo_handle_checkout()
 
     $cart = json_decode(stripslashes($cart_data), true);
     $total = 0;
-    $order_details = "";
-
+    $order_details = "THÔNG TIN KHÁCH HÀNG:\n";
+    $order_details .= "Họ tên: $name\n";
+    $order_details .= "Số điện thoại: $phone\n";
+    $order_details .= "Địa chỉ: $address\n";
+    $order_details .= "Ghi chú: $notes\n";
+    $order_details .= "Phương thức thanh toán: " . ($payment_method === 'cod' ? 'COD' : 'Chuyển khoản') . "\n\n";
+    
+    $order_details .= "CHI TIẾT ĐƠN HÀNG:\n";
     foreach ($cart as $item) {
         $subtotal = $item['price'] * $item['quantity'];
         $total += $subtotal;
@@ -285,7 +296,7 @@ function foodgo_handle_checkout()
 
     // Tạo bài viết mới trong CPT foodgo_order
     $order_id = wp_insert_post(array(
-        'post_title' => 'Đơn hàng #' . time(),
+        'post_title' => 'Đơn hàng từ ' . $name . ' (' . date('d/m/Y H:i') . ')',
         'post_type' => 'foodgo_order',
         'post_status' => 'publish',
         'post_content' => $order_details,
@@ -294,6 +305,12 @@ function foodgo_handle_checkout()
     if ($order_id) {
         update_post_meta($order_id, '_order_total', $total);
         update_post_meta($order_id, '_order_items_json', $cart_data);
+        update_post_meta($order_id, '_billing_name', $name);
+        update_post_meta($order_id, '_billing_phone', $phone);
+        update_post_meta($order_id, '_billing_address', $address);
+        update_post_meta($order_id, '_billing_notes', $notes);
+        update_post_meta($order_id, '_payment_method', $payment_method);
+        
         wp_send_json_success(array('order_id' => $order_id));
     } else {
         wp_send_json_error('Lỗi khi tạo đơn hàng!');
@@ -388,6 +405,433 @@ function foodgo_render_menu_shortcode()
 add_shortcode('foodgo_menu', 'foodgo_render_menu_shortcode');
 
 /**
+ * HIỂN THỊ DANH MỤC NỔI BẬT (Shortcode)
+ */
+function foodgo_render_featured_categories_shortcode() {
+    $categories = get_terms(array(
+        'taxonomy' => 'food_manager_category',
+        'hide_empty' => true,
+    ));
+    
+    if (is_wp_error($categories) || empty($categories)) {
+        return '';
+    }
+    
+    ob_start();
+    ?>
+    <div class="featured-categories" style="margin-bottom: 60px; margin-top: 40px;">
+        <div class="section-title" style="text-align: center; margin-bottom: 30px;">
+            <h2 style="font-size: 38px; font-weight: 900; letter-spacing: -1px; color: #1d1d1f; margin-bottom: 10px;">Danh mục nổi bật</h2>
+            <p style="color: #666; font-size: 16px;">Khám phá các món ăn theo danh mục</p>
+        </div>
+        <div class="categories-list" style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; justify-content: center; flex-wrap: wrap;">
+            <?php foreach ($categories as $cat) : ?>
+                <a href="/dat-mon?category=<?php echo esc_attr($cat->slug); ?>" class="category-card" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px !important; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 999px; font-weight: 700; font-size: 15px; color: #1d1d1f; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); transition: all 0.3s ease;">
+                    <?php echo esc_html($cat->name); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <style>
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 77, 79, 0.12);
+            border-color: rgba(255, 77, 79, 0.3);
+            background: #fff !important;
+            color: #ff4d4f !important;
+        }
+        .categories-list::-webkit-scrollbar {
+            display: none;
+        }
+        .categories-list {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('foodgo_featured_categories', 'foodgo_render_featured_categories_shortcode');
+
+/**
+ * HIỂN THỊ CHI TIẾT SẢN PHẨM (Shortcode)
+ */
+function foodgo_render_product_detail_shortcode() {
+    if (!is_singular('food_manager')) {
+        return '';
+    }
+    
+    $post_id = get_the_ID();
+    $title = get_the_title();
+    $content = get_the_content();
+    $thumbnail = get_post_meta($post_id, '_food_banner', true);
+    $price = get_post_meta($post_id, '_food_price', true);
+    $sale_price = get_post_meta($post_id, '_food_sale_price', true);
+    
+    // Format price
+    $display_price = '';
+    if (!empty($sale_price)) {
+        $display_price = '<del style="color: #999; font-size: 0.8em; margin-right: 10px;">' . number_format($price, 0, '', '.') . '₫</del>' . number_format($sale_price, 0, '', '.') . '₫';
+    } else if (!empty($price)) {
+        $display_price = number_format($price, 0, '', '.') . '₫';
+    } else {
+        $display_price = 'Liên hệ';
+    }
+    
+    ob_start();
+    ?>
+    <div class="fg-product-detail" style="padding: 180px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
+        <div class="fg-container" style="max-width: 1200px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important;">
+            <div class="fg-product-layout" style="display: flex !important; gap: 60px !important; align-items: flex-start !important; width: 100% !important; box-sizing: border-box !important;">
+                
+                <!-- Left: Image -->
+                <div class="fg-image-side" style="flex: 0 0 calc(50% - 30px) !important; max-width: calc(50% - 30px) !important; position: sticky !important; top: 120px !important; box-sizing: border-box !important;">
+                    <div class="fg-image-wrapper" style="border-radius: 24px !important; overflow: hidden !important; background: #fff !important; box-shadow: 0 15px 40px rgba(0,0,0,0.04) !important; border: 1px solid rgba(0,0,0,0.05) !important;">
+                        <?php if ($thumbnail) : ?>
+                            <img src="<?php echo esc_url($thumbnail); ?>" alt="<?php echo esc_attr($title); ?>" style="width: 100% !important; height: auto !important; display: block !important; object-fit: cover !important;">
+                        <?php else : ?>
+                            <div style="width: 100% !important; height: 400px !important; background: #eee !important; display: flex !important; align-items: center !important; justify-content: center !important; color: #aaa !important;">No Image</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <!-- Right: Content -->
+                <div class="fg-content-side" style="flex: 0 0 calc(50% - 30px) !important; max-width: calc(50% - 30px) !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; box-sizing: border-box !important;">
+                    <a href="/dat-mon" style="display: inline-flex !important; align-items: center !important; gap: 8px !important; color: #ff4d4f !important; text-decoration: none !important; font-weight: 700 !important; font-size: 14px !important; margin-bottom: 20px !important; text-transform: uppercase !important; letter-spacing: 1px !important;">
+                        ← Quay lại thực đơn
+                    </a>
+                    
+                    <h1 style="font-size: 36px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 15px !important; line-height: 1.2 !important; letter-spacing: -0.5px !important;"><?php echo esc_html($title); ?></h1>
+                    
+                    <div class="fg-price" style="font-size: 28px !important; font-weight: 800 !important; color: #ff4d4f !important; margin-bottom: 20px !important;">
+                        <?php echo $display_price; ?>
+                    </div>
+                    
+                    <div class="fg-description" style="color: #666 !important; font-size: 15px !important; line-height: 1.6 !important; margin-bottom: 30px !important;">
+                        <?php echo wp_kses_post($content); ?>
+                    </div>
+                    
+                    <div class="fg-actions" style="display: flex !important; gap: 15px !important; align-items: center !important;">
+                        <div class="fg-quantity" style="display: flex !important; align-items: center !important; background: #fff !important; border: 1px solid rgba(0,0,0,0.1) !important; border-radius: 999px !important; height: 50px !important; padding: 0 10px !important;">
+                            <button style="border: none !important; background: none !important; width: 30px !important; height: 30px !important; font-size: 18px !important; cursor: pointer !important; color: #666 !important;">-</button>
+                            <input type="text" value="1" style="width: 30px !important; text-align: center !important; border: none !important; font-size: 15px !important; font-weight: 700 !important; color: #1d1d1f !important; outline: none !important; background: none !important;" readonly>
+                            <button style="border: none !important; background: none !important; width: 30px !important; height: 30px !important; font-size: 18px !important; cursor: pointer !important; color: #666 !important;">+</button>
+                        </div>
+                        
+                        <button class="fg-btn add-to-cart" 
+                            data-id="<?php echo $post_id; ?>"
+                            data-name="<?php echo esc_attr($title); ?>"
+                            data-price="<?php echo $sale_price ? $sale_price : $price; ?>"
+                            data-image="<?php echo esc_url($thumbnail); ?>"
+                            style="flex: 1 !important; height: 50px !important; border: none !important; border-radius: 999px !important; background: linear-gradient(135deg, #ff7875, #ff4d4f) !important; color: #fff !important; font-size: 15px !important; font-weight: 700 !important; cursor: pointer !important; box-shadow: 0 10px 20px rgba(255, 77, 79, 0.15) !important; transition: all 0.3s ease !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; white-space: nowrap !important; padding: 0 30px 20px !important;">
+                            Thêm vào giỏ hàng
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .fg-btn:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 15px 30px rgba(255, 77, 79, 0.2) !important;
+        }
+        @media (max-width: 991px) {
+            .fg-product-layout { flex-direction: column !important; gap: 30px !important; }
+            .fg-image-side { flex: 0 0 100% !important; max-width: 100% !important; position: static !important; }
+            .fg-content-side { flex: 0 0 100% !important; max-width: 100% !important; }
+        }
+    </style>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('foodgo_product_detail', 'foodgo_render_product_detail_shortcode');
+
+/**
+ * HIỂN THỊ TRANG THANH TOÁN (Shortcode)
+ */
+function foodgo_render_checkout_shortcode() {
+    ob_start();
+    ?>
+    <div class="fg-checkout-page" style="padding: 160px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
+        <div class="fg-container" style="max-width: 1200px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important;">
+            <div class="fg-checkout-layout" style="display: flex !important; gap: 40px !important; align-items: flex-start !important; width: 100% !important; box-sizing: border-box !important;">
+                
+                <!-- Left: Checkout Form -->
+                <div class="fg-checkout-form-side" style="flex: 0 0 calc(60% - 20px) !important; max-width: calc(60% - 20px) !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; box-sizing: border-box !important;">
+                    <h2 style="font-size: 28px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 30px !important;">Thông tin giao hàng</h2>
+                    
+                    <form id="fg-checkout-form">
+                        <div class="form-group" style="margin-bottom: 20px !important;">
+                            <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Họ và tên *</label>
+                            <input type="text" id="billing_name" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important;">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 20px !important;">
+                            <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Số điện thoại *</label>
+                            <input type="tel" id="billing_phone" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important;">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 20px !important;">
+                            <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Địa chỉ giao hàng *</label>
+                            <input type="text" id="billing_address" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important;">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 30px !important;">
+                            <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Ghi chú đơn hàng</label>
+                            <textarea id="billing_notes" style="width: 100% !important; height: 100px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; resize: vertical !important; box-sizing: border-box !important;"></textarea>
+                        </div>
+                        
+                        <h2 style="font-size: 24px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 20px !important;">Phương thức thanh toán</h2>
+                        
+                        <div class="payment-methods" style="display: grid !important; gap: 15px !important; margin-bottom: 30px !important;">
+                            <label style="display: flex !important; align-items: center !important; gap: 10px !important; padding: 15px !important; border: 1px solid rgba(0,0,0,0.1) !important; border-radius: 12px !important; background: #fff !important; cursor: pointer !important;">
+                                <input type="radio" name="payment_method" value="cod" checked style="accent-color: #ff4d4f !important;">
+                                <div>
+                                    <div style="font-weight: 700 !important; color: #333 !important;">Thanh toán khi nhận hàng (COD)</div>
+                                    <div style="font-size: 13px !important; color: #666 !important;">Thanh toán bằng tiền mặt khi shipper giao hàng</div>
+                                </div>
+                            </label>
+                            
+                            <label style="display: flex !important; align-items: center !important; gap: 10px !important; padding: 15px !important; border: 1px solid rgba(0,0,0,0.1) !important; border-radius: 12px !important; background: #fff !important; cursor: pointer !important;">
+                                <input type="radio" name="payment_method" value="bank" style="accent-color: #ff4d4f !important;">
+                                <div>
+                                    <div style="font-weight: 700 !important; color: #333 !important;">Chuyển khoản ngân hàng</div>
+                                    <div style="font-size: 13px !important; color: #666 !important;">Chuyển khoản qua số tài khoản (Sẽ hiển thị sau khi đặt hàng)</div>
+                                </div>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Right: Order Summary -->
+                <div class="fg-checkout-summary-side" style="flex: 0 0 calc(40% - 20px) !important; max-width: calc(40% - 20px) !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; position: sticky !important; top: 120px !important; box-sizing: border-box !important;">
+                    <h2 style="font-size: 24px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 20px !important;">Đơn hàng của bạn</h2>
+                    
+                    <div id="fg-checkout-items" style="max-height: 300px !important; overflow-y: auto !important; margin-bottom: 20px !important; padding-right: 10px !important;">
+                        <!-- Items will be loaded here by JS -->
+                        <p style="color: #666 !important; text-align: center !important;">Giỏ hàng trống</p>
+                    </div>
+                    
+                    <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 15px !important; padding-top: 15px !important; border-top: 1px solid rgba(0,0,0,0.05) !important;">
+                        <span style="color: #666 !important;">Tạm tính:</span>
+                        <span id="fg-checkout-subtotal" style="font-weight: 700 !important; color: #1d1d1f !important;">0₫</span>
+                    </div>
+                    
+                    <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 15px !important;">
+                        <span style="color: #666 !important;">Phí vận chuyển:</span>
+                        <span style="font-weight: 700 !important; color: #1d1d1f !important;">Freeship</span>
+                    </div>
+                    
+                    <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 30px !important; font-size: 20px !important; font-weight: 800 !important;">
+                        <span>Tổng cộng:</span>
+                        <span id="fg-checkout-total" style="color: #ff4d4f !important;">0₫</span>
+                    </div>
+                    
+                    <button id="fg-submit-order" style="width: 100% !important; height: 56px !important; border: none !important; border-radius: 999px !important; background: linear-gradient(135deg, #ff7875, #ff4d4f) !important; color: #fff !important; font-size: 16px !important; font-weight: 700 !important; cursor: pointer !important; box-shadow: 0 10px 20px rgba(255, 77, 79, 0.15) !important; transition: 0.3s !important;">
+                        Đặt hàng ngay
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const itemsContainer = document.getElementById('fg-checkout-items');
+            const subtotalEl = document.getElementById('fg-checkout-subtotal');
+            const totalEl = document.getElementById('fg-checkout-total');
+            const submitBtn = document.getElementById('fg-submit-order');
+            
+            // Đọc giỏ hàng từ localStorage
+            let cart = JSON.parse(localStorage.getItem('foodgo_cart')) || [];
+            
+            if (cart.length === 0) {
+                itemsContainer.innerHTML = '<p style="color: #666 !important; text-align: center !important; padding: 20px !important;">Giỏ hàng của bạn đang trống. <a href="/dat-mon" style="color: #ff4d4f !important; font-weight: 700 !important;">Quay lại đặt món</a></p>';
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+                submitBtn.style.cursor = 'not-allowed';
+                return;
+            }
+            
+            // Render items
+            itemsContainer.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                const itemEl = document.createElement('div');
+                itemEl.style.display = 'flex';
+                itemEl.style.gap = '15px';
+                itemEl.style.marginBottom = '15px';
+                itemEl.style.alignItems = 'center';
+                
+                itemEl.innerHTML = `
+                    <div style="width: 60px; height: 60px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                        <img src="${item.image}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; color: #1d1d1f;">${item.name}</div>
+                        <div style="color: #666; font-size: 14px;">Số lượng: ${item.quantity}</div>
+                    </div>
+                    <div style="font-weight: 700; color: #333;">${(item.price * item.quantity).toLocaleString('vi-VN')}₫</div>
+                `;
+                itemsContainer.appendChild(itemEl);
+            });
+            
+            subtotalEl.textContent = total.toLocaleString('vi-VN') + '₫';
+            totalEl.textContent = total.toLocaleString('vi-VN') + '₫';
+            
+            // Xử lý đặt hàng
+            submitBtn.addEventListener('click', function() {
+                const name = document.getElementById('billing_name').value;
+                const phone = document.getElementById('billing_phone').value;
+                const address = document.getElementById('billing_address').value;
+                const notes = document.getElementById('billing_notes').value;
+                const payment_method = document.querySelector('input[name="payment_method"]:checked').value;
+                
+                if (!name || !phone || !address) {
+                    alert('Vui lòng điền đầy đủ các thông tin có dấu *');
+                    return;
+                }
+                
+                submitBtn.innerHTML = 'Đang xử lý...';
+                submitBtn.style.pointerEvents = 'none';
+                
+                // Gửi AJAX tạo đơn hàng
+                const formData = new FormData();
+                formData.append('action', 'foodgo_checkout');
+                formData.append('name', name);
+                formData.append('phone', phone);
+                formData.append('address', address);
+                formData.append('notes', notes);
+                formData.append('payment_method', payment_method);
+                formData.append('cart', JSON.stringify(cart));
+                
+                fetch('/wp-admin/admin-ajax.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('🎉 Đặt hàng thành công! Cảm ơn bạn.');
+                        localStorage.removeItem('foodgo_cart');
+                        window.location.href = '/cam-on?order_id=' + data.data.order_id;
+                    } else {
+                        alert('❌ Lỗi: ' + (data.data || 'Không thể tạo đơn hàng'));
+                        submitBtn.innerHTML = 'Đặt hàng ngay';
+                        submitBtn.style.pointerEvents = 'auto';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('❌ Có lỗi xảy ra. Vui lòng thử lại.');
+                    submitBtn.innerHTML = 'Đặt hàng ngay';
+                    submitBtn.style.pointerEvents = 'auto';
+                });
+            });
+        });
+    </script>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('foodgo_checkout', 'foodgo_render_checkout_shortcode');
+
+/**
+ * HIỂN THỊ TRANG CẢM ƠN & MÃ QR (Shortcode)
+ */
+function foodgo_render_thankyou_shortcode() {
+    $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+    
+    if (!$order_id) {
+        return '<p style="text-align:center; padding: 40px;">Không tìm thấy đơn hàng!</p>';
+    }
+    
+    $order = get_post($order_id);
+    if (!$order || $order->post_type !== 'foodgo_order') {
+        return '<p style="text-align:center; padding: 40px;">Đơn hàng không hợp lệ!</p>';
+    }
+    
+    $total = get_post_meta($order_id, '_order_total', true);
+    $payment_method = get_post_meta($order_id, '_payment_method', true);
+    $name = get_post_meta($order_id, '_billing_name', true);
+    
+    // Tạo link VietQR nếu là chuyển khoản hoặc COD muốn trả trước
+    $bank_id = 'OCB';
+    $account_no = '0048100004557477';
+    $account_name = rawurlencode('NGUYEN THI THU THAO');
+    $amount = $total;
+    $description = rawurlencode('DH' . $order_id);
+    
+    $qr_url = "https://img.vietqr.io/image/{$bank_id}-{$account_no}-compact.png?amount={$amount}&addInfo={$description}&accountName={$account_name}";
+    
+    ob_start();
+    ?>
+    <div class="fg-thankyou-page" style="padding: 160px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
+        <div class="fg-container" style="max-width: 800px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important;">
+            
+            <div class="fg-thankyou-box" style="background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; text-align: center !important; box-sizing: border-box !important;">
+                
+                <div style="width: 80px !important; height: 80px !important; background: #52c41a !important; color: #fff !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 40px !important; margin: 0 auto 20px auto !important;">✓</div>
+                
+                <h1 style="font-size: 32px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 10px !important;">Đặt hàng thành công!</h1>
+                <p style="color: #666 !important; font-size: 16px !important; margin-bottom: 30px !important;">Cảm ơn <strong><?php echo esc_html($name); ?></strong> đã tin tưởng FoodGo. Đơn hàng của bạn đang được xử lý.</p>
+                
+                <div style="background: #f9f9f9 !important; border-radius: 12px !important; padding: 20px !important; margin-bottom: 30px !important; text-align: left !important;">
+                    <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important;">
+                        <span style="color: #666 !important;">Mã đơn hàng:</span>
+                        <span style="font-weight: 700 !important; color: #1d1d1f !important;">#<?php echo $order_id; ?></span>
+                    </div>
+                    <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important;">
+                        <span style="color: #666 !important;">Tổng tiền:</span>
+                        <span style="font-weight: 700 !important; color: #ff4d4f !important;"><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
+                    </div>
+                    <div style="display: flex !important; justify-content: space-between !important;">
+                        <span style="color: #666 !important;">Phương thức:</span>
+                        <span style="font-weight: 700 !important; color: #1d1d1f !important;"><?php echo $payment_method === 'cod' ? 'COD (Tiền mặt)' : 'Chuyển khoản'; ?></span>
+                    </div>
+                </div>
+                
+                <?php if ($payment_method === 'bank') : ?>
+                    <div class="fg-qr-section" style="border-top: 1px solid rgba(0,0,0,0.05) !important; padding-top: 30px !important;">
+                        <h2 style="font-size: 20px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 15px !important;">Quét mã để thanh toán</h2>
+                        <p style="color: #666 !important; font-size: 14px !important; margin-bottom: 20px !important;">Vui lòng quét mã QR dưới đây để thanh toán qua ứng dụng ngân hàng.</p>
+                        
+                        <div style="max-width: 280px !important; margin: 0 auto 20px auto !important; border: 1px solid rgba(0,0,0,0.05) !important; border-radius: 16px !important; overflow: hidden !important; background: #fff !important; padding: 15px !important;">
+                            <img src="<?php echo esc_url($qr_url); ?>" alt="VietQR" style="width: 100% !important; height: auto !important; display: block !important;">
+                        </div>
+                        
+                        <div style="font-size: 14px !important; color: #666 !important; line-height: 1.6 !important;">
+                            <strong>Ngân hàng:</strong> Phương Đông (OCB)<br>
+                            <strong>Số tài khoản:</strong> 0048100004557477<br>
+                            <strong>Chủ tài khoản:</strong> NGUYEN THI THU THAO<br>
+                            <strong>Nội dung:</strong> <span style="color: #ff4d4f !important; font-weight: 700 !important;">DH<?php echo $order_id; ?></span>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                
+                <div style="margin-top: 40px !important;">
+                    <a href="/dat-mon" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; height: 50px !important; padding: 0 30px !important; border-radius: 999px !important; background: #1d1d1f !important; color: #fff !important; text-decoration: none !important; font-weight: 700 !important; transition: 0.3s !important;">
+                        Quay lại đặt món
+                    </a>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('foodgo_thankyou', 'foodgo_render_thankyou_shortcode');
+
+
+
+/**
  * HIỂN THỊ DANH SÁCH MÓN ĂN DẠNG BENTO GRID
  */
 function foodgo_render_bento_menu_shortcode()
@@ -442,7 +886,9 @@ function foodgo_render_bento_menu_shortcode()
         ?>
             <div class="food-card" data-category="all">
                 <div class="food-image">
-                    <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
+                    <a href="<?php the_permalink(); ?>">
+                        <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
+                    </a>
                     <button class="quick-add-btn add-to-cart"
                         data-id="<?php the_ID(); ?>"
                         data-name="<?php the_title(); ?>"
@@ -453,11 +899,13 @@ function foodgo_render_bento_menu_shortcode()
                 </div>
 
                 <div class="food-content">
-                    <div class="food-top">
-                        <h3><?php the_title(); ?></h3>
-                        <span class="food-price"><?php echo number_format($price, 0, ',', '.'); ?>đ</span>
-                    </div>
-                    <p><?php echo wp_trim_words(get_the_content(), 10); ?></p>
+                    <a href="<?php the_permalink(); ?>" style="text-decoration: none; color: inherit;">
+                        <div class="food-top">
+                            <h3><?php the_title(); ?></h3>
+                            <span class="food-price"><?php echo number_format($price, 0, ',', '.'); ?>đ</span>
+                        </div>
+                        <p><?php echo wp_trim_words(get_the_content(), 10); ?></p>
+                    </a>
                 </div>
             </div>
         <?php endwhile;
@@ -502,7 +950,9 @@ function foodgo_filter_products() {
     ?>
         <div class="food-card">
             <div class="food-image">
-                <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
+                <a href="<?php the_permalink(); ?>">
+                    <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
+                </a>
                 <button class="quick-add-btn add-to-cart" 
                     data-id="<?php the_ID(); ?>"
                     data-name="<?php the_title(); ?>"
@@ -513,11 +963,13 @@ function foodgo_filter_products() {
             </div>
 
             <div class="food-content">
-                <div class="food-top">
-                    <h3><?php the_title(); ?></h3>
-                    <span class="food-price"><?php echo number_format($price, 0, ',', '.'); ?>đ</span>
-                </div>
-                <p><?php echo wp_trim_words(get_the_content(), 10); ?></p>
+                <a href="<?php the_permalink(); ?>" style="text-decoration: none; color: inherit;">
+                    <div class="food-top">
+                        <h3><?php the_title(); ?></h3>
+                        <span class="food-price"><?php echo number_format($price, 0, ',', '.'); ?>đ</span>
+                    </div>
+                    <p><?php echo wp_trim_words(get_the_content(), 10); ?></p>
+                </a>
             </div>
         </div>
     <?php endwhile; wp_reset_postdata();
