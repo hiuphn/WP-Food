@@ -49,7 +49,7 @@ add_action('init', function() {
     register_block_pattern('foodgo/about-intro', array(
         'title'      => 'About - Intro Hero (Mới)',
         'categories' => array('foodgo-about'),
-        'content'    => file_get_contents($dir . 'about-intro.html'),
+        'content'    => file_get_contents($dir . 'about.html'),
     ));
     register_block_pattern('foodgo/about-story', array(
         'title'      => 'About - Our Story (Mới)',

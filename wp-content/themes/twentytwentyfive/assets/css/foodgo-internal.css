@@ -1,77 +1,323 @@
-/* 
- * INTERNAL PAGES - PREMIUM GENZ STYLE
- */
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* GLASS EFFECTS */
-.glass-section {
-    background: radial-gradient(circle at 10% 20%, rgba(255, 77, 79, 0.03) 0%, transparent 40%);
-    padding: 100px 0 !important;
+/* ======================================================= */
+/* ABOUT PAGE - PATRICK HAND & POPPINS STYLE (WARM & CHILL) */
+/* ======================================================= */
+
+.about-page-wrapper {
+    background: #f7f4f1 !important;
+    font-family: 'Poppins', sans-serif !important;
+    color: #2b2b2b !important;
+    padding: 120px 0 60px 0 !important; /* Đẩy xuống để không bị header đè */
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-.glass-card {
-    background: rgba(255, 255, 255, 0.7) !important;
-    backdrop-filter: blur(15px) !important;
-    -webkit-backdrop-filter: blur(15px) !important;
-    border: 5px solid rgba(255, 255, 255, 0.4) !important;
-    border-radius: 35px !important;
-    padding: 20px 40px !important;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.05) !important;
+.about-container {
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
 }
 
-/* TYPOGRAPHY */
-.section-label {
-    font-size: 14px !important;
-    font-weight: 800 !important;
-    letter-spacing: 3px !important;
-    color: #ff4d4f !important;
-    margin-bottom: 20px !important;
-    text-transform: uppercase !important;
+/* ===================== */
+/* BREADCRUMB */
+/* ===================== */
+.about-page-wrapper .breadcrumb {
+    background: #ece8e4 !important;
+    padding: 14px 18px !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+    margin-bottom: 35px !important;
 }
 
-.hero-title {
-    font-size: 60px !important;
-    font-weight: 900 !important;
-    line-height: 1.1 !important;
-    margin-bottom: 30px !important;
-    color: #111 !important;
+/* ===================== */
+/* ABOUT CONTENT */
+/* ===================== */
+.about-section {
+    padding: 10px 0 60px 0 !important;
 }
 
-.hero-description {
-    font-size: 20px !important;
+.about-section .title {
+    font-size: 58px !important;
+    font-family: 'Patrick Hand', cursive !important;
+    margin-bottom: 25px !important;
+    color: #2d211c !important;
+    font-weight: normal !important;
+}
+
+.about-section p {
+    font-size: 18px !important;
+    line-height: 2 !important;
+    margin-bottom: 25px !important;
+    color: #444 !important;
+}
+
+/* ===================== */
+/* HERO IMAGE */
+/* ===================== */
+.about-hero-image {
+    margin: 30px 0 50px 0 !important;
+    border-radius: 30px !important;
+    overflow: hidden !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+}
+
+.about-hero-image img {
+    width: 100% !important;
+    height: 320px !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* ===================== */
+/* FEATURES */
+/* ===================== */
+.about-features-section {
+    padding: 0 0 70px 0 !important;
+}
+
+.about-features-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+}
+
+.about-feature-box {
+    background: white !important;
+    padding: 25px !important;
+    border-radius: 25px !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05) !important;
+    transition: all 0.3s ease !important;
+}
+
+.about-feature-box:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+}
+
+.about-feature-box h3 {
+    font-size: 28px !important;
+    margin-bottom: 10px !important;
+    font-family: 'Patrick Hand', cursive !important;
+    color: #2d211c !important;
+    font-weight: normal !important;
+}
+
+.about-feature-box p {
     color: #666 !important;
-    line-height: 1.6 !important;
+    line-height: 1.8 !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+}
+
+/* ===================== */
+/* VISIT */
+/* ===================== */
+.about-visit-section {
+    text-align: center !important;
+    padding: 40px 0 80px 0 !important;
+}
+
+.about-visit-section h2 {
+    font-size: 45px !important;
+    font-family: 'Patrick Hand', cursive !important;
+    color: #2d211c !important;
+    margin-bottom: 15px !important;
+    font-weight: normal !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+}
+
+.about-visit-section .visit-brand {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 800 !important;
+    color: #ff4d4f !important;
+    margin-left: 12px !important;
+    letter-spacing: -1px !important;
+    display: inline-block !important;
+    line-height: 1 !important;
+}
+
+.about-visit-section .visit-brand span {
+    color: #111 !important;
+    display: inline !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    margin: 0 !important;
+}
+
+.about-visit-section .visit-subtitle {
+    display: block !important;
+    font-size: 55px !important;
+    font-family: cursive !important;
+    color: #8d6757 !important;
     margin-bottom: 40px !important;
 }
 
-/* SECTION HEADING */
-.section-heading {
+.about-food-logo {
+    width: 220px !important;
+    height: 220px !important;
+    border: 5px solid #8d6757 !important;
+    border-radius: 50% !important;
+    margin: 0 auto 40px auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    background: white !important;
+}
+
+.about-food-logo h3 {
+    font-size: 45px !important;
+    color: #8d6757 !important;
+    line-height: 1 !important;
+    font-family: 'Poppins', sans-serif !important;
+    margin: 0 !important;
+    font-weight: 700 !important;
+}
+
+.about-food-logo p {
+    color: #8d6757 !important;
+    font-size: 22px !important;
+    margin-top: 10px !important;
+    font-family: 'Poppins', sans-serif !important;
+    margin-bottom: 0 !important;
+}
+
+.about-btn {
+    background: #dd866e !important;
+    color: white !important;
+    display: inline-block !important;
+    padding: 18px 45px !important;
+    border-radius: 8px !important;
+    font-size: 26px !important;
+    font-family: 'Patrick Hand', cursive !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+
+.about-btn:hover {
+    opacity: 0.9 !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 20px rgba(221, 134, 110, 0.3) !important;
+}
+
+/* ===================== */
+/* ABOUT FOOTER */
+/* ===================== */
+.about-footer {
+    padding: 30px 20px 60px !important;
     text-align: center !important;
-    margin-bottom: 60px !important;
 }
 
-.section-heading h2 {
-    font-size: 42px !important;
-    font-weight: 800 !important;
+.about-footer-menu {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 25px !important;
+    flex-wrap: wrap !important;
 }
 
-/* STORY IMAGE */
-.story-image img {
-    border-radius: 40px !important;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.1) !important;
-    width: 100% !important;
-    height: auto !important;
+.about-footer-menu a {
+    font-family: 'Patrick Hand', cursive !important;
+    font-size: 28px !important;
+    color: #2d211c !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease !important;
 }
 
-/* STATS OVERRIDE */
-.about-stats .stats {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 20px !important;
-    text-align: center !important;
+.about-footer-menu a:hover {
+    color: #dd866e !important;
 }
 
-.about-stats h2 {
-    font-size: 48px !important;
-    color: #ff4d4f !important;
-    margin-bottom: 10px !important;
+/* ======================================================= */
+/* DESKTOP OPTIMIZATIONS (min-width: 992px) */
+/* ======================================================= */
+@media (min-width: 992px) {
+    .about-page-wrapper {
+        /* padding: 160px 0 80px 0 !important; */
+    }
+
+    .about-section {
+        padding: 20px 0 70px 0 !important;
+    }
+
+    .about-section .title {
+        font-size: 70px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .about-section p {
+        font-size: 17px !important;
+        line-height: 2 !important;
+        max-width: 900px !important;
+    }
+
+    .about-hero-image {
+        margin: 40px 0 !important;
+        border-radius: 35px !important;
+    }
+
+    .about-hero-image img {
+        height: 420px !important;
+    }
+
+    .about-features-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 25px !important;
+    }
+
+    .about-feature-box {
+        padding: 30px !important;
+    }
+
+    .about-feature-box h3 {
+        font-size: 30px !important;
+    }
+
+    .about-visit-section {
+        /* padding: 60px 0 100px 0 !important; */
+    }
+
+    .about-visit-section h2 {
+        font-size: 45px !important;
+    }
+
+    .about-visit-section .visit-subtitle {
+        font-size: 45px !important;
+    }
+
+    .about-food-logo {
+        width: 260px !important;
+        height: 260px !important;
+    }
+
+    .about-food-logo h3 {
+        font-size: 55px !important;
+    }
+
+    .about-food-logo p {
+        font-size: 26px !important;
+    }
+
+    .about-btn {
+        padding: 20px 60px !important;
+        font-size: 30px !important;
+    }
+
+    .about-footer {
+        padding: 40px 20px 60px !important;
+    }
+
+    .about-footer-menu {
+        gap: 40px !important;
+    }
+
+    .about-footer-menu a {
+        font-size: 30px !important;
+    }
 }
