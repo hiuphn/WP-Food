@@ -73,6 +73,7 @@
 /* STATS */
 .stats {
     margin-top: 40px !important;
+    margin-bottom: 40px !important;
     display: flex !important;
     gap: 40px !important;
     flex-wrap: wrap !important;
