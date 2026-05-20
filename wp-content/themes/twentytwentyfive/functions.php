@@ -269,6 +269,7 @@ function foodgo_handle_checkout()
     $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
     $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
     $address = isset($_POST['address']) ? sanitize_text_field($_POST['address']) : '';
+    $ward = isset($_POST['ward']) ? sanitize_text_field($_POST['ward']) : 'Phường Bạc Liêu';
     $notes = isset($_POST['notes']) ? sanitize_textarea_field($_POST['notes']) : '';
     $payment_method = isset($_POST['payment_method']) ? sanitize_text_field($_POST['payment_method']) : 'cod';
 
@@ -281,7 +282,8 @@ function foodgo_handle_checkout()
     $order_details = "THÔNG TIN KHÁCH HÀNG:\n";
     $order_details .= "Họ tên: $name\n";
     $order_details .= "Số điện thoại: $phone\n";
-    $order_details .= "Địa chỉ: $address\n";
+    $order_details .= "Xã/Phường/Khu vực: $ward\n";
+    $order_details .= "Địa chỉ chi tiết: $address\n";
     $order_details .= "Ghi chú: $notes\n";
     $order_details .= "Phương thức thanh toán: " . ($payment_method === 'cod' ? 'COD' : 'Chuyển khoản') . "\n\n";
     
@@ -292,10 +294,15 @@ function foodgo_handle_checkout()
         $order_details .= "- " . $item['name'] . " x " . $item['quantity'] . " (" . number_format($subtotal, 0, ',', '.') . "đ)\n";
     }
 
-    $shipping = $total >= 400000 ? 0 : 25000;
-    $final_total = $total + $shipping;
+    // Phường Bạc Liêu được Freeship, các khu vực khác tính ship 25k
+    $shipping = ($ward === 'Phường Bạc Liêu') ? 0 : 25000;
+    $discount = $total >= 400000 ? round($total * 0.1) : 0;
+    $final_total = $total + $shipping - $discount;
 
     $order_details .= "\nTạm tính: " . number_format($total, 0, ',', '.') . "đ\n";
+    if ($discount > 0) {
+        $order_details .= "Giảm giá tự động (10%): -" . number_format($discount, 0, ',', '.') . "đ\n";
+    }
     $order_details .= "Phí vận chuyển: " . ($shipping === 0 ? 'Freeship' : number_format($shipping, 0, ',', '.') . 'đ') . "\n";
     $order_details .= "Tổng cộng: " . number_format($final_total, 0, ',', '.') . "đ";
 
@@ -308,7 +315,11 @@ function foodgo_handle_checkout()
     ));
 
     if ($order_id) {
+        update_post_meta($order_id, '_order_subtotal', $total);
+        update_post_meta($order_id, '_order_shipping', $shipping);
+        update_post_meta($order_id, '_order_discount', $discount);
         update_post_meta($order_id, '_order_total', $final_total);
+        update_post_meta($order_id, '_billing_ward', $ward);
         update_post_meta($order_id, '_order_items_json', $cart_data);
         update_post_meta($order_id, '_billing_name', $name);
         update_post_meta($order_id, '_billing_phone', $phone);
@@ -606,8 +617,24 @@ function foodgo_render_checkout_shortcode() {
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 20px !important;">
-                            <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Địa chỉ giao hàng *</label>
+                            <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Địa chỉ chi tiết (Số nhà, tên đường...) *</label>
                             <input type="text" id="billing_address" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important;">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 20px !important;">
+                            <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Xã / Phường / Khu vực *</label>
+                            <select id="billing_ward" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important; appearance: auto !important;">
+                                <option value="Phường Bạc Liêu">Phường Bạc Liêu (Freeship)</option>
+                                <option value="Phường An Xuyên">Phường An Xuyên (Phí ship 25k)</option>
+                                <option value="Xã An Trạch">Xã An Trạch (Phí ship 25k)</option>
+                                <option value="Xã Đất Mũi">Xã Đất Mũi (Phí ship 25k)</option>
+                                <option value="Xã Năm Căn">Xã Năm Căn (Phí ship 25k)</option>
+                                <option value="Xã U Minh">Xã U Minh (Phí ship 25k)</option>
+                                <option value="Xã Đầm Dơi">Xã Đầm Dơi (Phí ship 25k)</option>
+                                <option value="Xã Cái Nước">Xã Cái Nước (Phí ship 25k)</option>
+                                <option value="Phường Giá Rai">Phường Giá Rai (Phí ship 25k)</option>
+                                <option value="Phường Láng Tròn">Phường Láng Tròn (Phí ship 25k)</option>
+                            </select>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 30px !important;">
@@ -656,6 +683,11 @@ function foodgo_render_checkout_shortcode() {
                         <span id="fg-checkout-shipping" style="font-weight: 700 !important; color: #1d1d1f !important;">Freeship</span>
                     </div>
                     
+                    <div id="fg-checkout-discount-row" class="summary-row" style="display: none !important; justify-content: space-between !important; margin-bottom: 15px !important; color: #52c41a !important;">
+                        <span>🎁 Giảm giá tự động (10%):</span>
+                        <span id="fg-checkout-discount" style="font-weight: 700 !important;">-0₫</span>
+                    </div>
+                    
                     <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 30px !important; font-size: 20px !important; font-weight: 800 !important;">
                         <span>Tổng cộng:</span>
                         <span id="fg-checkout-total" style="color: #ff4d4f !important;">0₫</span>
@@ -675,6 +707,8 @@ function foodgo_render_checkout_shortcode() {
             const itemsContainer = document.getElementById('fg-checkout-items');
             const subtotalEl = document.getElementById('fg-checkout-subtotal');
             const shippingEl = document.getElementById('fg-checkout-shipping');
+            const discountRow = document.getElementById('fg-checkout-discount-row');
+            const discountEl = document.getElementById('fg-checkout-discount');
             const totalEl = document.getElementById('fg-checkout-total');
             const submitBtn = document.getElementById('fg-submit-order');
             
@@ -714,23 +748,42 @@ function foodgo_render_checkout_shortcode() {
                 itemsContainer.appendChild(itemEl);
             });
             
-            // Tính phí ship
-            const shipping = total >= 400000 ? 0 : 25000;
-            const finalTotal = total + shipping;
+            // Quản lý phí ship theo xã phường và giảm giá tự động
+            const wardSelect = document.getElementById('billing_ward');
             
-            subtotalEl.textContent = total.toLocaleString('vi-VN') + '₫';
-            shippingEl.textContent = shipping === 0 ? 'Freeship' : shipping.toLocaleString('vi-VN') + '₫';
-            totalEl.textContent = finalTotal.toLocaleString('vi-VN') + '₫';
+            function updateCheckoutSummary() {
+                const selectedWard = wardSelect.value;
+                const shipping = (selectedWard === 'Phường Bạc Liêu') ? 0 : 25000;
+                const discount = total >= 400000 ? Math.round(total * 0.1) : 0;
+                const finalTotal = total + shipping - discount;
+                
+                subtotalEl.textContent = total.toLocaleString('vi-VN') + '₫';
+                shippingEl.textContent = shipping === 0 ? 'Freeship' : shipping.toLocaleString('vi-VN') + '₫';
+                
+                if (discount > 0) {
+                    discountEl.textContent = '-' + discount.toLocaleString('vi-VN') + '₫';
+                    discountRow.style.setProperty('display', 'flex', 'important');
+                } else {
+                    discountRow.style.setProperty('display', 'none', 'important');
+                }
+                
+                totalEl.textContent = finalTotal.toLocaleString('vi-VN') + '₫';
+            }
+            
+            // Lắng nghe sự kiện đổi Xã/Phường
+            wardSelect.addEventListener('change', updateCheckoutSummary);
+            updateCheckoutSummary(); // Chạy lần đầu
             
             // Xử lý đặt hàng
             submitBtn.addEventListener('click', function() {
                 const name = document.getElementById('billing_name').value;
                 const phone = document.getElementById('billing_phone').value;
                 const address = document.getElementById('billing_address').value;
+                const ward = wardSelect.value;
                 const notes = document.getElementById('billing_notes').value;
                 const payment_method = document.querySelector('input[name="payment_method"]:checked').value;
                 
-                if (!name || !phone || !address) {
+                if (!name || !phone || !address || !ward) {
                     alert('Vui lòng điền đầy đủ các thông tin có dấu *');
                     return;
                 }
@@ -744,6 +797,7 @@ function foodgo_render_checkout_shortcode() {
                 formData.append('name', name);
                 formData.append('phone', phone);
                 formData.append('address', address);
+                formData.append('ward', ward);
                 formData.append('notes', notes);
                 formData.append('payment_method', payment_method);
                 formData.append('cart', JSON.stringify(cart));
@@ -794,10 +848,14 @@ function foodgo_render_thankyou_shortcode() {
     }
     
     $total = get_post_meta($order_id, '_order_total', true);
+    $subtotal = get_post_meta($order_id, '_order_subtotal', true) ?: $total;
+    $shipping = get_post_meta($order_id, '_order_shipping', true);
+    $shipping = ($shipping === '' || $shipping === false) ? 0 : intval($shipping);
     $payment_method = get_post_meta($order_id, '_payment_method', true);
     $name = get_post_meta($order_id, '_billing_name', true);
     $phone = get_post_meta($order_id, '_billing_phone', true);
     $address = get_post_meta($order_id, '_billing_address', true);
+    $ward = get_post_meta($order_id, '_billing_ward', true) ?: 'Phường Bạc Liêu';
     $notes = get_post_meta($order_id, '_billing_notes', true);
     $items_json = get_post_meta($order_id, '_order_items_json', true);
     $items = json_decode($items_json, true) ?: [];
@@ -829,8 +887,25 @@ function foodgo_render_thankyou_shortcode() {
                         <span style="font-weight: 700 !important; color: #1d1d1f !important;">#<?php echo $order_id; ?></span>
                     </div>
                     <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important;">
-                        <span style="color: #666 !important;">Tổng tiền:</span>
-                        <span style="font-weight: 700 !important; color: #ff4d4f !important;"><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
+                        <span style="color: #666 !important;">Tạm tính:</span>
+                        <span style="font-weight: 700 !important; color: #1d1d1f !important;"><?php echo number_format($subtotal, 0, ',', '.'); ?>₫</span>
+                    </div>
+                    <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important;">
+                        <span style="color: #666 !important;">🚚 Phí vận chuyển (<?php echo esc_html($ward); ?>):</span>
+                        <span style="font-weight: 700 !important; color: <?php echo $shipping === 0 ? '#52c41a' : '#1d1d1f'; ?> !important;"><?php echo $shipping === 0 ? 'Freeship 🎉' : number_format($shipping, 0, ',', '.') . '₫'; ?></span>
+                    </div>
+                    <?php 
+                    $discount = get_post_meta($order_id, '_order_discount', true) ?: 0;
+                    if ($discount > 0) : 
+                    ?>
+                    <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important; color: #52c41a !important;">
+                        <span>🎁 Giảm giá tự động (10%):</span>
+                        <span style="font-weight: 700 !important;">-<?php echo number_format($discount, 0, ',', '.'); ?>₫</span>
+                    </div>
+                    <?php endif; ?>
+                    <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important; padding-top: 10px !important; border-top: 1px solid rgba(0,0,0,0.08) !important;">
+                        <span style="color: #666 !important; font-weight: 700 !important;">Tổng thanh toán:</span>
+                        <span style="font-weight: 800 !important; font-size: 18px !important; color: #ff4d4f !important;"><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
                     </div>
                     <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 20px !important;">
                         <span style="color: #666 !important;">Phương thức:</span>
@@ -842,7 +917,7 @@ function foodgo_render_thankyou_shortcode() {
                         <div style="font-size: 14px !important; color: #666 !important; line-height: 1.6 !important;">
                             <strong>Họ tên:</strong> <?php echo esc_html($name); ?><br>
                             <strong>Số điện thoại:</strong> <?php echo esc_html($phone); ?><br>
-                            <strong>Địa chỉ:</strong> <?php echo esc_html($address); ?><br>
+                            <strong>Địa chỉ:</strong> <?php echo esc_html($address) . ', ' . esc_html($ward); ?><br>
                             <?php if ($notes) : ?>
                                 <strong>Ghi chú:</strong> <?php echo esc_html($notes); ?><br>
                             <?php endif; ?>
@@ -870,6 +945,11 @@ function foodgo_render_thankyou_shortcode() {
                         <div style="max-width: 280px !important; margin: 0 auto 20px auto !important; border: 1px solid rgba(0,0,0,0.05) !important; border-radius: 16px !important; overflow: hidden !important; background: #fff !important; padding: 15px !important;">
                             <img src="<?php echo esc_url($qr_url); ?>" alt="VietQR" style="width: 100% !important; height: auto !important; display: block !important;">
                         </div>
+                        <?php if ($discount > 0) : ?>
+                            <div style="background: rgba(82, 196, 26, 0.08) !important; color: #52c41a !important; border: 1px solid rgba(82, 196, 26, 0.2) !important; padding: 10px 15px !important; border-radius: 10px !important; font-size: 14px !important; font-weight: 700 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; margin-bottom: 25px !important; box-sizing: border-box !important;">
+                                🎉 Đơn hàng từ 400k đã được tự động giảm giá 10%!
+                            </div>
+                        <?php endif; ?>
                         
                         <div style="font-size: 14px !important; color: #666 !important; line-height: 1.6 !important;">
                             <strong>Ngân hàng:</strong> Phương Đông (OCB)<br>
