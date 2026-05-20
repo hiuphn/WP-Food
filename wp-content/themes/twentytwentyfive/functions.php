@@ -286,7 +286,7 @@ function foodgo_handle_checkout()
     $order_details .= "Địa chỉ chi tiết: $address\n";
     $order_details .= "Ghi chú: $notes\n";
     $order_details .= "Phương thức thanh toán: " . ($payment_method === 'cod' ? 'COD' : 'Chuyển khoản') . "\n\n";
-    
+
     $order_details .= "CHI TIẾT ĐƠN HÀNG:\n";
     foreach ($cart as $item) {
         $subtotal = $item['price'] * $item['quantity'];
@@ -326,7 +326,7 @@ function foodgo_handle_checkout()
         update_post_meta($order_id, '_billing_address', $address);
         update_post_meta($order_id, '_billing_notes', $notes);
         update_post_meta($order_id, '_payment_method', $payment_method);
-        
+
         wp_send_json_success(array('order_id' => $order_id));
     } else {
         wp_send_json_error('Lỗi khi tạo đơn hàng!');
@@ -427,18 +427,19 @@ add_shortcode('foodgo_menu', 'foodgo_render_menu_shortcode');
 /**
  * HIỂN THỊ DANH MỤC NỔI BẬT (Shortcode)
  */
-function foodgo_render_featured_categories_shortcode() {
+function foodgo_render_featured_categories_shortcode()
+{
     $categories = get_terms(array(
         'taxonomy' => 'food_manager_category',
         'hide_empty' => true,
     ));
-    
+
     if (is_wp_error($categories) || empty($categories)) {
         return '';
     }
-    
+
     ob_start();
-    ?>
+?>
     <div class="featured-categories" style="margin-bottom: 60px; margin-top: 40px;">
         <div class="section-title" style="text-align: center; margin-bottom: 30px;">
             <h2 style="font-size: 38px; font-weight: 900; letter-spacing: -1px; color: #1d1d1f; margin-bottom: 10px;">Danh mục nổi bật</h2>
@@ -460,15 +461,17 @@ function foodgo_render_featured_categories_shortcode() {
             background: #fff !important;
             color: #ff4d4f !important;
         }
+
         .categories-list::-webkit-scrollbar {
             display: none;
         }
+
         .categories-list {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
     </style>
-    <?php
+<?php
     return ob_get_clean();
 }
 add_shortcode('foodgo_featured_categories', 'foodgo_render_featured_categories_shortcode');
@@ -476,18 +479,19 @@ add_shortcode('foodgo_featured_categories', 'foodgo_render_featured_categories_s
 /**
  * HIỂN THỊ CHI TIẾT SẢN PHẨM (Shortcode)
  */
-function foodgo_render_product_detail_shortcode() {
+function foodgo_render_product_detail_shortcode()
+{
     if (!is_singular('food_manager')) {
         return '';
     }
-    
+
     $post_id = get_the_ID();
     $title = get_the_title();
     $content = get_the_content();
     $thumbnail = get_post_meta($post_id, '_food_banner', true);
     $price = get_post_meta($post_id, '_food_price', true);
     $sale_price = get_post_meta($post_id, '_food_sale_price', true);
-    
+
     // Format price
     $display_price = '';
     if (!empty($sale_price)) {
@@ -497,13 +501,13 @@ function foodgo_render_product_detail_shortcode() {
     } else {
         $display_price = 'Liên hệ';
     }
-    
+
     ob_start();
-    ?>
+?>
     <div class="fg-product-detail" style="padding: 180px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
         <div class="fg-container" style="max-width: 1200px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important;">
             <div class="fg-product-layout" style="display: flex !important; gap: 60px !important; align-items: flex-start !important; width: 100% !important; box-sizing: border-box !important;">
-                
+
                 <!-- Left: Image -->
                 <div class="fg-image-side" style="flex: 0 0 calc(50% - 30px) !important; max-width: calc(50% - 30px) !important; position: sticky !important; top: 120px !important; box-sizing: border-box !important;">
                     <div class="fg-image-wrapper" style="border-radius: 24px !important; overflow: hidden !important; background: #fff !important; box-shadow: 0 15px 40px rgba(0,0,0,0.04) !important; border: 1px solid rgba(0,0,0,0.05) !important;">
@@ -514,31 +518,31 @@ function foodgo_render_product_detail_shortcode() {
                         <?php endif; ?>
                     </div>
                 </div>
-                
+
                 <!-- Right: Content -->
                 <div class="fg-content-side" style="flex: 0 0 calc(50% - 30px) !important; max-width: calc(50% - 30px) !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; box-sizing: border-box !important;">
                     <a href="/dat-mon" style="display: inline-flex !important; align-items: center !important; gap: 8px !important; color: #ff4d4f !important; text-decoration: none !important; font-weight: 700 !important; font-size: 14px !important; margin-bottom: 20px !important; text-transform: uppercase !important; letter-spacing: 1px !important;">
                         ← Quay lại thực đơn
                     </a>
-                    
+
                     <h1 style="font-size: 36px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 15px !important; line-height: 1.2 !important; letter-spacing: -0.5px !important;"><?php echo esc_html($title); ?></h1>
-                    
+
                     <div class="fg-price" style="font-size: 28px !important; font-weight: 800 !important; color: #ff4d4f !important; margin-bottom: 20px !important;">
                         <?php echo $display_price; ?>
                     </div>
-                    
+
                     <div class="fg-description" style="color: #666 !important; font-size: 15px !important; line-height: 1.6 !important; margin-bottom: 30px !important;">
                         <?php echo wp_kses_post($content); ?>
                     </div>
-                    
+
                     <div class="fg-actions" style="display: flex !important; gap: 15px !important; align-items: center !important;">
                         <div class="fg-quantity" style="display: flex !important; align-items: center !important; background: #fff !important; border: 1px solid rgba(0,0,0,0.1) !important; border-radius: 999px !important; height: 50px !important; padding: 0 10px !important;">
                             <button style="border: none !important; background: none !important; width: 30px !important; height: 30px !important; font-size: 18px !important; cursor: pointer !important; color: #666 !important;">-</button>
                             <input type="text" value="1" style="width: 30px !important; text-align: center !important; border: none !important; font-size: 15px !important; font-weight: 700 !important; color: #1d1d1f !important; outline: none !important; background: none !important;" readonly>
                             <button style="border: none !important; background: none !important; width: 30px !important; height: 30px !important; font-size: 18px !important; cursor: pointer !important; color: #666 !important;">+</button>
                         </div>
-                        
-                        <button class="fg-btn add-to-cart" 
+
+                        <button class="fg-btn add-to-cart"
                             data-id="<?php echo $post_id; ?>"
                             data-name="<?php echo esc_attr($title); ?>"
                             data-price="<?php echo $sale_price ? $sale_price : $price; ?>"
@@ -548,20 +552,33 @@ function foodgo_render_product_detail_shortcode() {
                         </button>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
-    
+
     <style>
         .fg-btn:hover {
             transform: translateY(-3px) !important;
             box-shadow: 0 15px 30px rgba(255, 77, 79, 0.2) !important;
         }
+
         @media (max-width: 991px) {
-            .fg-product-layout { flex-direction: column !important; gap: 30px !important; }
-            .fg-image-side { flex: 0 0 100% !important; max-width: 100% !important; position: static !important; }
-            .fg-content-side { flex: 0 0 100% !important; max-width: 100% !important; }
+            .fg-product-layout {
+                flex-direction: column !important;
+                gap: 30px !important;
+            }
+
+            .fg-image-side {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+                position: static !important;
+            }
+
+            .fg-content-side {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
         }
     </style>
     <?php
@@ -572,10 +589,11 @@ add_shortcode('foodgo_product_detail', 'foodgo_render_product_detail_shortcode')
 /**
  * HIỂN THỊ TRANG THANH TOÁN (Shortcode)
  */
-function foodgo_render_checkout_shortcode() {
+function foodgo_render_checkout_shortcode()
+{
     if (!is_user_logged_in()) {
         ob_start();
-        ?>
+    ?>
         <div class="fg-checkout-page" style="padding: 160px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
             <div class="fg-container" style="max-width: 600px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important; text-align: center !important;">
                 <div style="background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important;">
@@ -591,36 +609,36 @@ function foodgo_render_checkout_shortcode() {
                 </div>
             </div>
         </div>
-        <?php
+    <?php
         return ob_get_clean();
     }
-    
+
     ob_start();
     ?>
     <div class="fg-checkout-page" style="padding: 160px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
         <div class="fg-container" style="max-width: 1200px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important;">
             <div class="fg-checkout-layout" style="display: flex !important; gap: 40px !important; align-items: flex-start !important; width: 100% !important; box-sizing: border-box !important;">
-                
+
                 <!-- Left: Checkout Form -->
                 <div class="fg-checkout-form-side" style="flex: 0 0 calc(60% - 20px) !important; max-width: calc(60% - 20px) !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; box-sizing: border-box !important;">
                     <h2 style="font-size: 28px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 30px !important;">Thông tin giao hàng</h2>
-                    
+
                     <form id="fg-checkout-form">
                         <div class="form-group" style="margin-bottom: 20px !important;">
                             <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Họ và tên *</label>
                             <input type="text" id="billing_name" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important;">
                         </div>
-                        
+
                         <div class="form-group" style="margin-bottom: 20px !important;">
                             <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Số điện thoại *</label>
                             <input type="tel" id="billing_phone" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important;">
                         </div>
-                        
+
                         <div class="form-group" style="margin-bottom: 20px !important;">
                             <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Địa chỉ chi tiết (Số nhà, tên đường...) *</label>
                             <input type="text" id="billing_address" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important;">
                         </div>
-                        
+
                         <div class="form-group" style="margin-bottom: 20px !important;">
                             <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Xã / Phường / Khu vực *</label>
                             <select id="billing_ward" required style="width: 100% !important; height: 50px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 0 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; box-sizing: border-box !important; appearance: auto !important;">
@@ -636,14 +654,14 @@ function foodgo_render_checkout_shortcode() {
                                 <option value="Phường Láng Tròn">Phường Láng Tròn (Phí ship 25k)</option>
                             </select>
                         </div>
-                        
+
                         <div class="form-group" style="margin-bottom: 30px !important;">
                             <label style="display: block !important; font-weight: 700 !important; color: #333 !important; margin-bottom: 8px !important;">Ghi chú đơn hàng</label>
                             <textarea id="billing_notes" style="width: 100% !important; height: 100px !important; border-radius: 12px !important; border: 1px solid rgba(0,0,0,0.1) !important; padding: 15px !important; font-size: 15px !important; outline: none !important; background: #fff !important; resize: vertical !important; box-sizing: border-box !important;"></textarea>
                         </div>
-                        
+
                         <h2 style="font-size: 24px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 20px !important;">Phương thức thanh toán</h2>
-                        
+
                         <div class="payment-methods" style="display: grid !important; gap: 15px !important; margin-bottom: 30px !important;">
                             <label style="display: flex !important; align-items: center !important; gap: 10px !important; padding: 15px !important; border: 1px solid rgba(0,0,0,0.1) !important; border-radius: 12px !important; background: #fff !important; cursor: pointer !important;">
                                 <input type="radio" name="payment_method" value="cod" checked style="accent-color: #ff4d4f !important;">
@@ -652,7 +670,7 @@ function foodgo_render_checkout_shortcode() {
                                     <div style="font-size: 13px !important; color: #666 !important;">Thanh toán bằng tiền mặt khi shipper giao hàng</div>
                                 </div>
                             </label>
-                            
+
                             <label style="display: flex !important; align-items: center !important; gap: 10px !important; padding: 15px !important; border: 1px solid rgba(0,0,0,0.1) !important; border-radius: 12px !important; background: #fff !important; cursor: pointer !important;">
                                 <input type="radio" name="payment_method" value="bank" style="accent-color: #ff4d4f !important;">
                                 <div>
@@ -663,45 +681,45 @@ function foodgo_render_checkout_shortcode() {
                         </div>
                     </form>
                 </div>
-                
+
                 <!-- Right: Order Summary -->
                 <div class="fg-checkout-summary-side" style="flex: 0 0 calc(40% - 20px) !important; max-width: calc(40% - 20px) !important; background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; position: sticky !important; top: 120px !important; box-sizing: border-box !important;">
                     <h2 style="font-size: 24px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 20px !important;">Đơn hàng của bạn</h2>
-                    
+
                     <div id="fg-checkout-items" style="max-height: 300px !important; overflow-y: auto !important; margin-bottom: 20px !important; padding-right: 10px !important;">
                         <!-- Items will be loaded here by JS -->
                         <p style="color: #666 !important; text-align: center !important;">Giỏ hàng trống</p>
                     </div>
-                    
+
                     <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 15px !important; padding-top: 15px !important; border-top: 1px solid rgba(0,0,0,0.05) !important;">
                         <span style="color: #666 !important;">Tạm tính:</span>
                         <span id="fg-checkout-subtotal" style="font-weight: 700 !important; color: #1d1d1f !important;">0₫</span>
                     </div>
-                    
+
                     <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 15px !important;">
                         <span style="color: #666 !important;">Phí vận chuyển:</span>
                         <span id="fg-checkout-shipping" style="font-weight: 700 !important; color: #1d1d1f !important;">Freeship</span>
                     </div>
-                    
+
                     <div id="fg-checkout-discount-row" class="summary-row" style="display: none !important; justify-content: space-between !important; margin-bottom: 15px !important; color: #52c41a !important;">
                         <span>🎁 Giảm giá tự động (10%):</span>
                         <span id="fg-checkout-discount" style="font-weight: 700 !important;">-0₫</span>
                     </div>
-                    
+
                     <div class="summary-row" style="display: flex !important; justify-content: space-between !important; margin-bottom: 30px !important; font-size: 20px !important; font-weight: 800 !important;">
                         <span>Tổng cộng:</span>
                         <span id="fg-checkout-total" style="color: #ff4d4f !important;">0₫</span>
                     </div>
-                    
+
                     <button id="fg-submit-order" style="width: 100% !important; height: 56px !important; border: none !important; border-radius: 999px !important; background: linear-gradient(135deg, #ff7875, #ff4d4f) !important; color: #fff !important; font-size: 16px !important; font-weight: 700 !important; cursor: pointer !important; box-shadow: 0 10px 20px rgba(255, 77, 79, 0.15) !important; transition: 0.3s !important;">
                         Đặt hàng ngay
                     </button>
                 </div>
-                
+
             </div>
         </div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const itemsContainer = document.getElementById('fg-checkout-items');
@@ -711,10 +729,10 @@ function foodgo_render_checkout_shortcode() {
             const discountEl = document.getElementById('fg-checkout-discount');
             const totalEl = document.getElementById('fg-checkout-total');
             const submitBtn = document.getElementById('fg-submit-order');
-            
+
             // Đọc giỏ hàng từ localStorage
             let cart = JSON.parse(localStorage.getItem('foodgo_cart')) || [];
-            
+
             if (cart.length === 0) {
                 itemsContainer.innerHTML = '<p style="color: #666 !important; text-align: center !important; padding: 20px !important;">Giỏ hàng của bạn đang trống. <a href="/dat-mon" style="color: #ff4d4f !important; font-weight: 700 !important;">Quay lại đặt món</a></p>';
                 submitBtn.disabled = true;
@@ -722,11 +740,11 @@ function foodgo_render_checkout_shortcode() {
                 submitBtn.style.cursor = 'not-allowed';
                 return;
             }
-            
+
             // Render items
             itemsContainer.innerHTML = '';
             let total = 0;
-            
+
             cart.forEach(item => {
                 total += item.price * item.quantity;
                 const itemEl = document.createElement('div');
@@ -734,7 +752,7 @@ function foodgo_render_checkout_shortcode() {
                 itemEl.style.gap = '15px';
                 itemEl.style.marginBottom = '15px';
                 itemEl.style.alignItems = 'center';
-                
+
                 itemEl.innerHTML = `
                     <div style="width: 60px; height: 60px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
                         <img src="${item.image}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -747,33 +765,33 @@ function foodgo_render_checkout_shortcode() {
                 `;
                 itemsContainer.appendChild(itemEl);
             });
-            
+
             // Quản lý phí ship theo xã phường và giảm giá tự động
             const wardSelect = document.getElementById('billing_ward');
-            
+
             function updateCheckoutSummary() {
                 const selectedWard = wardSelect.value;
                 const shipping = (selectedWard === 'Phường Bạc Liêu') ? 0 : 25000;
                 const discount = total >= 400000 ? Math.round(total * 0.1) : 0;
                 const finalTotal = total + shipping - discount;
-                
+
                 subtotalEl.textContent = total.toLocaleString('vi-VN') + '₫';
                 shippingEl.textContent = shipping === 0 ? 'Freeship' : shipping.toLocaleString('vi-VN') + '₫';
-                
+
                 if (discount > 0) {
                     discountEl.textContent = '-' + discount.toLocaleString('vi-VN') + '₫';
                     discountRow.style.setProperty('display', 'flex', 'important');
                 } else {
                     discountRow.style.setProperty('display', 'none', 'important');
                 }
-                
+
                 totalEl.textContent = finalTotal.toLocaleString('vi-VN') + '₫';
             }
-            
+
             // Lắng nghe sự kiện đổi Xã/Phường
             wardSelect.addEventListener('change', updateCheckoutSummary);
             updateCheckoutSummary(); // Chạy lần đầu
-            
+
             // Xử lý đặt hàng
             submitBtn.addEventListener('click', function() {
                 const name = document.getElementById('billing_name').value;
@@ -782,15 +800,15 @@ function foodgo_render_checkout_shortcode() {
                 const ward = wardSelect.value;
                 const notes = document.getElementById('billing_notes').value;
                 const payment_method = document.querySelector('input[name="payment_method"]:checked').value;
-                
+
                 if (!name || !phone || !address || !ward) {
                     alert('Vui lòng điền đầy đủ các thông tin có dấu *');
                     return;
                 }
-                
+
                 submitBtn.innerHTML = 'Đang xử lý...';
                 submitBtn.style.pointerEvents = 'none';
-                
+
                 // Gửi AJAX tạo đơn hàng
                 const formData = new FormData();
                 formData.append('action', 'foodgo_checkout');
@@ -801,33 +819,33 @@ function foodgo_render_checkout_shortcode() {
                 formData.append('notes', notes);
                 formData.append('payment_method', payment_method);
                 formData.append('cart', JSON.stringify(cart));
-                
+
                 fetch('/wp-admin/admin-ajax.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('🎉 Đặt hàng thành công! Cảm ơn bạn.');
-                        localStorage.removeItem('foodgo_cart');
-                        window.location.href = '/cam-on?order_id=' + data.data.order_id;
-                    } else {
-                        alert('❌ Lỗi: ' + (data.data || 'Không thể tạo đơn hàng'));
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('🎉 Đặt hàng thành công! Cảm ơn bạn.');
+                            localStorage.removeItem('foodgo_cart');
+                            window.location.href = '/cam-on?order_id=' + data.data.order_id;
+                        } else {
+                            alert('❌ Lỗi: ' + (data.data || 'Không thể tạo đơn hàng'));
+                            submitBtn.innerHTML = 'Đặt hàng ngay';
+                            submitBtn.style.pointerEvents = 'auto';
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('❌ Có lỗi xảy ra. Vui lòng thử lại.');
                         submitBtn.innerHTML = 'Đặt hàng ngay';
                         submitBtn.style.pointerEvents = 'auto';
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('❌ Có lỗi xảy ra. Vui lòng thử lại.');
-                    submitBtn.innerHTML = 'Đặt hàng ngay';
-                    submitBtn.style.pointerEvents = 'auto';
-                });
+                    });
             });
         });
     </script>
-    <?php
+<?php
     return ob_get_clean();
 }
 add_shortcode('foodgo_checkout', 'foodgo_render_checkout_shortcode');
@@ -835,18 +853,19 @@ add_shortcode('foodgo_checkout', 'foodgo_render_checkout_shortcode');
 /**
  * HIỂN THỊ TRANG CẢM ƠN & MÃ QR (Shortcode)
  */
-function foodgo_render_thankyou_shortcode() {
+function foodgo_render_thankyou_shortcode()
+{
     $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
-    
+
     if (!$order_id) {
         return '<p style="text-align:center; padding: 40px;">Không tìm thấy đơn hàng!</p>';
     }
-    
+
     $order = get_post($order_id);
     if (!$order || $order->post_type !== 'foodgo_order') {
         return '<p style="text-align:center; padding: 40px;">Đơn hàng không hợp lệ!</p>';
     }
-    
+
     $total = get_post_meta($order_id, '_order_total', true);
     $subtotal = get_post_meta($order_id, '_order_subtotal', true) ?: $total;
     $shipping = get_post_meta($order_id, '_order_shipping', true);
@@ -859,28 +878,28 @@ function foodgo_render_thankyou_shortcode() {
     $notes = get_post_meta($order_id, '_billing_notes', true);
     $items_json = get_post_meta($order_id, '_order_items_json', true);
     $items = json_decode($items_json, true) ?: [];
-    
+
     // Tạo link VietQR nếu là chuyển khoản hoặc COD muốn trả trước
     $bank_id = 'OCB';
     $account_no = '0048100004557477';
     $account_name = rawurlencode('NGUYEN THI THU THAO');
     $amount = $total;
     $description = rawurlencode('DH' . $order_id);
-    
+
     $qr_url = "https://img.vietqr.io/image/{$bank_id}-{$account_no}-compact.png?amount={$amount}&addInfo={$description}&accountName={$account_name}";
-    
+
     ob_start();
-    ?>
+?>
     <div class="fg-thankyou-page" style="padding: 160px 0 80px 0 !important; background: #f8f8fa !important; width: 100% !important; box-sizing: border-box !important;">
         <div class="fg-container" style="max-width: 800px !important; margin: 0 auto !important; padding: 0 20px !important; box-sizing: border-box !important;">
-            
+
             <div class="fg-thankyou-box" style="background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px) !important; border-radius: 24px !important; padding: 40px !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.04) !important; text-align: center !important; box-sizing: border-box !important;">
-                
+
                 <div style="width: 80px !important; height: 80px !important; background: #52c41a !important; color: #fff !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 40px !important; margin: 0 auto 20px auto !important;">✓</div>
-                
+
                 <h1 style="font-size: 32px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 10px !important;">Đặt hàng thành công!</h1>
                 <p style="color: #666 !important; font-size: 16px !important; margin-bottom: 30px !important;">Cảm ơn <strong><?php echo esc_html($name); ?></strong> đã tin tưởng FoodGo. Đơn hàng của bạn đang được xử lý.</p>
-                
+
                 <div style="background: #f9f9f9 !important; border-radius: 12px !important; padding: 20px !important; margin-bottom: 30px !important; text-align: left !important;">
                     <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important;">
                         <span style="color: #666 !important;">Mã đơn hàng:</span>
@@ -894,14 +913,14 @@ function foodgo_render_thankyou_shortcode() {
                         <span style="color: #666 !important;">🚚 Phí vận chuyển (<?php echo esc_html($ward); ?>):</span>
                         <span style="font-weight: 700 !important; color: <?php echo $shipping === 0 ? '#52c41a' : '#1d1d1f'; ?> !important;"><?php echo $shipping === 0 ? 'Freeship 🎉' : number_format($shipping, 0, ',', '.') . '₫'; ?></span>
                     </div>
-                    <?php 
+                    <?php
                     $discount = get_post_meta($order_id, '_order_discount', true) ?: 0;
-                    if ($discount > 0) : 
+                    if ($discount > 0) :
                     ?>
-                    <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important; color: #52c41a !important;">
-                        <span>🎁 Giảm giá tự động (10%):</span>
-                        <span style="font-weight: 700 !important;">-<?php echo number_format($discount, 0, ',', '.'); ?>₫</span>
-                    </div>
+                        <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important; color: #52c41a !important;">
+                            <span>🎁 Giảm giá tự động (10%):</span>
+                            <span style="font-weight: 700 !important;">-<?php echo number_format($discount, 0, ',', '.'); ?>₫</span>
+                        </div>
                     <?php endif; ?>
                     <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 10px !important; padding-top: 10px !important; border-top: 1px solid rgba(0,0,0,0.08) !important;">
                         <span style="color: #666 !important; font-weight: 700 !important;">Tổng thanh toán:</span>
@@ -911,7 +930,7 @@ function foodgo_render_thankyou_shortcode() {
                         <span style="color: #666 !important;">Phương thức:</span>
                         <span style="font-weight: 700 !important; color: #1d1d1f !important;"><?php echo $payment_method === 'cod' ? 'COD (Tiền mặt)' : 'Chuyển khoản'; ?></span>
                     </div>
-                    
+
                     <div style="border-top: 1px solid rgba(0,0,0,0.05) !important; padding-top: 15px !important; margin-bottom: 15px !important;">
                         <h3 style="font-size: 16px !important; font-weight: 700 !important; color: #1d1d1f !important; margin-bottom: 10px !important;">Thông tin người đặt:</h3>
                         <div style="font-size: 14px !important; color: #666 !important; line-height: 1.6 !important;">
@@ -923,7 +942,7 @@ function foodgo_render_thankyou_shortcode() {
                             <?php endif; ?>
                         </div>
                     </div>
-                    
+
                     <div style="border-top: 1px solid rgba(0,0,0,0.05) !important; padding-top: 15px !important;">
                         <h3 style="font-size: 16px !important; font-weight: 700 !important; color: #1d1d1f !important; margin-bottom: 10px !important;">Sản phẩm đã đặt:</h3>
                         <div style="font-size: 14px !important; color: #666 !important;">
@@ -936,12 +955,12 @@ function foodgo_render_thankyou_shortcode() {
                         </div>
                     </div>
                 </div>
-                
+
                 <?php if ($payment_method === 'bank') : ?>
                     <div class="fg-qr-section" style="border-top: 1px solid rgba(0,0,0,0.05) !important; padding-top: 30px !important;">
                         <h2 style="font-size: 20px !important; font-weight: 800 !important; color: #1d1d1f !important; margin-bottom: 15px !important;">Quét mã để thanh toán</h2>
                         <p style="color: #666 !important; font-size: 14px !important; margin-bottom: 20px !important;">Vui lòng quét mã QR dưới đây để thanh toán qua ứng dụng ngân hàng.</p>
-                        
+
                         <div style="max-width: 280px !important; margin: 0 auto 20px auto !important; border: 1px solid rgba(0,0,0,0.05) !important; border-radius: 16px !important; overflow: hidden !important; background: #fff !important; padding: 15px !important;">
                             <img src="<?php echo esc_url($qr_url); ?>" alt="VietQR" style="width: 100% !important; height: auto !important; display: block !important;">
                         </div>
@@ -950,7 +969,7 @@ function foodgo_render_thankyou_shortcode() {
                                 🎉 Đơn hàng từ 400k đã được tự động giảm giá 10%!
                             </div>
                         <?php endif; ?>
-                        
+
                         <div style="font-size: 14px !important; color: #666 !important; line-height: 1.6 !important;">
                             <strong>Ngân hàng:</strong> Phương Đông (OCB)<br>
                             <strong>Số tài khoản:</strong> 0048100004557477<br>
@@ -959,18 +978,18 @@ function foodgo_render_thankyou_shortcode() {
                         </div>
                     </div>
                 <?php endif; ?>
-                
+
                 <div style="margin-top: 40px !important;">
                     <a href="/dat-mon" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; height: 50px !important; padding: 0 30px !important; border-radius: 999px !important; background: #1d1d1f !important; color: #fff !important; text-decoration: none !important; font-weight: 700 !important; transition: 0.3s !important;">
                         Quay lại đặt món
                     </a>
                 </div>
-                
+
             </div>
-            
+
         </div>
     </div>
-    <?php
+<?php
     return ob_get_clean();
 }
 add_shortcode('foodgo_thankyou', 'foodgo_render_thankyou_shortcode');
@@ -992,13 +1011,13 @@ function foodgo_render_bento_menu_shortcode()
 
     $index = 0;
     ob_start();
-    
+
     // Lấy tất cả danh mục món ăn (Chỉ lấy danh mục có sản phẩm)
     $categories = get_terms(array(
         'taxonomy' => 'food_manager_category',
         'hide_empty' => true,
     ));
-    
+
     // Hàm ẩn danh để lấy emoji
     $get_food_emoji = function ($name) {
         $name = mb_strtolower($name);
@@ -1010,7 +1029,7 @@ function foodgo_render_bento_menu_shortcode()
         return '';
     };
 ?>
-    
+
     <!-- CATEGORY TABS (Động) -->
     <div class="category-slider">
         <div class="category-list">
@@ -1057,21 +1076,22 @@ function foodgo_render_bento_menu_shortcode()
         <?php endwhile;
         wp_reset_postdata(); ?>
     </div>
-<?php
+    <?php
     return ob_get_clean();
 }
 add_shortcode('foodgo_bento_menu', 'foodgo_render_bento_menu_shortcode');
 
 // XỬ LÝ AJAX LỌC SẢN PHẨM TRONG DB
-function foodgo_filter_products() {
+function foodgo_filter_products()
+{
     $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : 'all';
-    
+
     $args = array(
         'post_type'      => 'food_manager',
         'posts_per_page' => 30,
         'post_status'    => 'publish',
     );
-    
+
     // Nếu không phải "Tất cả", tiến hành lọc theo taxonomy
     if ($category !== 'all') {
         $args['tax_query'] = array(
@@ -1082,15 +1102,15 @@ function foodgo_filter_products() {
             ),
         );
     }
-    
+
     $query = new WP_Query($args);
-    
+
     if (!$query->have_posts()) {
         echo '<p style="text-align:center; padding: 40px; color: #333;">Không tìm thấy món ăn nào trong danh mục: ' . esc_html($category) . '</p>';
         wp_die();
     }
-    
-    while ($query->have_posts()) : $query->the_post(); 
+
+    while ($query->have_posts()) : $query->the_post();
         $price = get_post_meta(get_the_ID(), '_food_price', true);
         $image = get_post_meta(get_the_ID(), '_food_banner', true);
     ?>
@@ -1099,7 +1119,7 @@ function foodgo_filter_products() {
                 <a href="<?php the_permalink(); ?>">
                     <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
                 </a>
-                <button class="quick-add-btn add-to-cart" 
+                <button class="quick-add-btn add-to-cart"
                     data-id="<?php the_ID(); ?>"
                     data-name="<?php the_title(); ?>"
                     data-price="<?php echo $price; ?>"
@@ -1118,62 +1138,103 @@ function foodgo_filter_products() {
                 </a>
             </div>
         </div>
-    <?php endwhile; wp_reset_postdata();
+    <?php endwhile;
+    wp_reset_postdata();
     wp_die();
 }
 add_action('wp_ajax_foodgo_filter_products', 'foodgo_filter_products');
 add_action('wp_ajax_nopriv_foodgo_filter_products', 'foodgo_filter_products');
 
 // SHORTCODE TRANG TÀI KHOẢN (LOGIN, REGISTER, DASHBOARD)
-function foodgo_account_shortcode() {
+function foodgo_account_shortcode()
+{
     ob_start();
-    
+
+    // Prepare error containers
+    $login_error = '';
+    $register_error = '';
+
     // Xử lý Đăng nhập
-    if (isset($_POST['login_nonce']) && wp_verify_nonce($_POST['login_nonce'], 'foodgo_login_nonce')) {
-        $creds = array(
-            'user_login'    => sanitize_text_field($_POST['username']),
-            'user_password' => $_POST['password'],
-            'remember'      => true
-        );
-        $user = wp_signon($creds, false);
-        if (is_wp_error($user)) {
-            echo '<p style="color:red; text-align:center; padding: 10px; background: #fff1f0; border-radius: 10px;">❌ ' . $user->get_error_message() . '</p>';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['username']) || isset($_POST['password']))) {
+        if (isset($_POST['login_nonce']) && wp_verify_nonce($_POST['login_nonce'], 'foodgo_login_nonce')) {
+            $creds = array(
+                'user_login'    => sanitize_text_field($_POST['username']),
+                'user_password' => $_POST['password'],
+                'remember'      => true
+            );
+            $user = wp_signon($creds, false);
+            if (is_wp_error($user)) {
+                $login_error = wp_strip_all_tags($user->get_error_message());
+                if (!headers_sent()) {
+                    wp_safe_redirect(esc_url_raw(add_query_arg('login_error', rawurlencode($login_error))));
+                    exit;
+                }
+            } else {
+                echo '<script>window.location.href = window.location.href;</script>';
+                exit;
+            }
         } else {
-            echo '<script>window.location.href = window.location.href;</script>';
-            exit;
+            $login_error = 'Phiên đăng nhập không hợp lệ. Vui lòng thử lại.';
+            if (!headers_sent()) {
+                wp_safe_redirect(esc_url_raw(add_query_arg('login_error', rawurlencode($login_error))));
+                exit;
+            }
         }
     }
 
     // Xử lý Đăng ký
-    if (isset($_POST['register_nonce']) && wp_verify_nonce($_POST['register_nonce'], 'foodgo_register_nonce')) {
-        $username = sanitize_text_field($_POST['reg_username']);
-        $email = sanitize_email($_POST['reg_email']);
-        $password = $_POST['reg_password'];
-        
-        $user_id = wp_create_user($username, $password, $email);
-        if (is_wp_error($user_id)) {
-            echo '<p style="color:red; text-align:center; padding: 10px; background: #fff1f0; border-radius: 10px;">❌ ' . $user_id->get_error_message() . '</p>';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['reg_username']) || isset($_POST['reg_email']))) {
+        if (isset($_POST['register_nonce']) && wp_verify_nonce($_POST['register_nonce'], 'foodgo_register_nonce')) {
+            $username = sanitize_text_field($_POST['reg_username']);
+            $email = sanitize_email($_POST['reg_email']);
+            $password = $_POST['reg_password'];
+
+            $user_id = wp_create_user($username, $password, $email);
+            if (is_wp_error($user_id)) {
+                $register_error = wp_strip_all_tags($user_id->get_error_message());
+                if (!headers_sent()) {
+                    wp_safe_redirect(esc_url_raw(add_query_arg('register_error', rawurlencode($register_error))));
+                    exit;
+                }
+            } else {
+                // Tự động đăng nhập sau khi đăng ký thành công
+                wp_set_current_user($user_id);
+                wp_set_auth_cookie($user_id);
+                echo '<script>window.location.href = window.location.href;</script>';
+                exit;
+            }
         } else {
-            // Tự động đăng nhập sau khi đăng ký thành công
-            wp_set_current_user($user_id);
-            wp_set_auth_cookie($user_id);
-            echo '<script>window.location.href = window.location.href;</script>';
-            exit;
+            $register_error = 'Phiên đăng ký không hợp lệ. Vui lòng thử lại.';
+            if (!headers_sent()) {
+                wp_safe_redirect(esc_url_raw(add_query_arg('register_error', rawurlencode($register_error))));
+                exit;
+            }
         }
     }
-    
+
+    // If redirected with error messages, use them
+    if (empty($login_error) && isset($_GET['login_error'])) {
+        $login_error = rawurldecode($_GET['login_error']);
+    }
+    if (empty($register_error) && isset($_GET['register_error'])) {
+        $register_error = rawurldecode($_GET['register_error']);
+    }
+
     if (!is_user_logged_in()) {
         // FORM ĐĂNG NHẬP / ĐĂNG KÝ
-        ?>
+    ?>
         <div class="account-auth-container">
             <div class="auth-box glass-card">
                 <div class="auth-tabs">
                     <button class="auth-tab-btn active" data-target="login-form">Đăng nhập</button>
                     <button class="auth-tab-btn" data-target="register-form">Đăng ký</button>
                 </div>
-                
+
                 <!-- FORM ĐĂNG NHẬP -->
                 <form id="login-form" class="auth-form active" method="post">
+                    <?php if (!empty($login_error)) : ?>
+                        <div class="form-error" style="color:red; text-align:center; padding: 10px; background: #fff1f0; border-radius: 10px; margin-bottom: 15px;">❌ <?php echo esc_html($login_error); ?></div>
+                    <?php endif; ?>
                     <div class="form-group">
                         <label>Tên tài khoản hoặc Email</label>
                         <input type="text" name="username" placeholder="Nhập tài khoản hoặc email..." required>
@@ -1185,9 +1246,12 @@ function foodgo_account_shortcode() {
                     <button type="submit" class="btn-auth">Đăng nhập</button>
                     <?php wp_nonce_field('foodgo_login_nonce', 'login_nonce'); ?>
                 </form>
-                
+
                 <!-- FORM ĐĂNG KÝ -->
                 <form id="register-form" class="auth-form" method="post">
+                    <?php if (!empty($register_error)) : ?>
+                        <div class="form-error" style="color:red; text-align:center; padding: 10px; background: #fff1f0; border-radius: 10px; margin-bottom: 15px;">❌ <?php echo esc_html($register_error); ?></div>
+                    <?php endif; ?>
                     <div class="form-group">
                         <label>Tên tài khoản</label>
                         <input type="text" name="reg_username" placeholder="Tên tài khoản viết liền không dấu..." required>
@@ -1205,24 +1269,122 @@ function foodgo_account_shortcode() {
                 </form>
             </div>
         </div>
-        
+
         <style>
-            .account-auth-container { display: flex !important; justify-content: center !important; padding: 100px 0 !important; background: #f8f8fa !important; min-height: 70vh !important; margin-top: 100px !important; }
-            .auth-box { background: white !important; padding: 40px !important; border-radius: 30px !important; box-shadow: 0 20px 40px rgba(0,0,0,0.05) !important; width: 100% !important; max-width: 450px !important; height: fit-content !important; }
-            .auth-tabs { display: flex !important; gap: 30px !important; margin-bottom: 30px !important; border-bottom: 1px solid #eee !important; padding-bottom: 15px !important; }
-            .auth-tab-btn { border: none !important; background: none !important; font-size: 20px !important; font-weight: 700 !important; color: #aaa !important; cursor: pointer !important; transition: all 0.3s !important; padding: 0 !important; }
-            .auth-tab-btn.active { color: #ff4d4f !important; position: relative !important; }
-            .auth-tab-btn.active::after { content: '' !important; position: absolute !important; bottom: -17px !important; left: 0 !important; width: 100% !important; height: 3px !important; background: #ff4d4f !important; border-radius: 3px !important; }
-            .auth-form { display: none !important; }
-            .auth-form.active { display: block !important; }
-            .form-group { margin-bottom: 20px !important; position: relative !important; }
-            .form-group label { display: block !important; margin-bottom: 8px !important; font-weight: 600 !important; color: #333 !important; font-size: 16px !important; position: static !important; transform: none !important; }
-            .form-group input { width: 100% !important; padding: 14px !important; border: 1px solid #ddd !important; border-radius: 12px !important; font-size: 15px !important; transition: all 0.3s !important; background: white !important; height: auto !important; }
-            .form-group input:focus { border-color: #ff4d4f !important; outline: none !important; box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.1) !important; }
-            .btn-auth { width: 100% !important; padding: 14px !important; background: #ff4d4f !important; color: white !important; border: none !important; border-radius: 12px !important; cursor: pointer !important; font-size: 16px !important; font-weight: 700 !important; transition: all 0.3s !important; }
-            .btn-auth:hover { background: #ff7875 !important; transform: translateY(-2px) !important; box-shadow: 0 10px 20px rgba(255, 77, 79, 0.2) !important; }
+            .account-auth-container {
+                display: flex !important;
+                justify-content: center !important;
+                padding: 100px 0 !important;
+                background: #f8f8fa !important;
+                min-height: 70vh !important;
+                margin-top: 100px !important;
+            }
+
+            .auth-box {
+                background: white !important;
+                padding: 40px !important;
+                border-radius: 30px !important;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
+                width: 100% !important;
+                max-width: 450px !important;
+                height: fit-content !important;
+            }
+
+            .auth-tabs {
+                display: flex !important;
+                gap: 30px !important;
+                margin-bottom: 30px !important;
+                border-bottom: 1px solid #eee !important;
+                padding-bottom: 15px !important;
+            }
+
+            .auth-tab-btn {
+                border: none !important;
+                background: none !important;
+                font-size: 20px !important;
+                font-weight: 700 !important;
+                color: #aaa !important;
+                cursor: pointer !important;
+                transition: all 0.3s !important;
+                padding: 0 !important;
+            }
+
+            .auth-tab-btn.active {
+                color: #ff4d4f !important;
+                position: relative !important;
+            }
+
+            .auth-tab-btn.active::after {
+                content: '' !important;
+                position: absolute !important;
+                bottom: -17px !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 3px !important;
+                background: #ff4d4f !important;
+                border-radius: 3px !important;
+            }
+
+            .auth-form {
+                display: none !important;
+            }
+
+            .auth-form.active {
+                display: block !important;
+            }
+
+            .form-group {
+                margin-bottom: 20px !important;
+                position: relative !important;
+            }
+
+            .form-group label {
+                display: block !important;
+                margin-bottom: 8px !important;
+                font-weight: 600 !important;
+                color: #333 !important;
+                font-size: 16px !important;
+                position: static !important;
+                transform: none !important;
+            }
+
+            .form-group input {
+                width: 100% !important;
+                padding: 14px !important;
+                border: 1px solid #ddd !important;
+                border-radius: 12px !important;
+                font-size: 15px !important;
+                transition: all 0.3s !important;
+                background: white !important;
+                height: auto !important;
+            }
+
+            .form-group input:focus {
+                border-color: #ff4d4f !important;
+                outline: none !important;
+                box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.1) !important;
+            }
+
+            .btn-auth {
+                width: 100% !important;
+                padding: 14px !important;
+                background: #ff4d4f !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 12px !important;
+                cursor: pointer !important;
+                font-size: 16px !important;
+                font-weight: 700 !important;
+                transition: all 0.3s !important;
+            }
+
+            .btn-auth:hover {
+                background: #ff7875 !important;
+                transform: translateY(-2px) !important;
+                box-shadow: 0 10px 20px rgba(255, 77, 79, 0.2) !important;
+            }
         </style>
-        
+
         <script>
             document.querySelectorAll('.auth-tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1233,11 +1395,11 @@ function foodgo_account_shortcode() {
                 });
             });
         </script>
-        <?php
+    <?php
     } else {
         // TRANG DASHBOARD (Option 2: Sidebar)
         $current_user = wp_get_current_user();
-        ?>
+    ?>
         <div class="account-dashboard-container">
             <!-- Sidebar -->
             <div class="account-sidebar glass-card">
@@ -1252,7 +1414,7 @@ function foodgo_account_shortcode() {
                     <a href="<?php echo wp_logout_url(home_url('/tai-khoan')); ?>" class="menu-item logout">🚪 Đăng xuất</a>
                 </div>
             </div>
-            
+
             <!-- Content -->
             <div class="account-content glass-card">
                 <!-- Mục Hồ sơ -->
@@ -1273,7 +1435,7 @@ function foodgo_account_shortcode() {
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Mục Đơn hàng -->
                 <div id="orders" class="content-section">
                     <h3>Đơn hàng của tôi</h3>
@@ -1286,10 +1448,10 @@ function foodgo_account_shortcode() {
                         'author'         => $current_user_id,
                     );
                     $orders_query = new WP_Query($args);
-                    
+
                     if ($orders_query->have_posts()) : ?>
                         <div class="orders-list">
-                            <?php while ($orders_query->have_posts()) : $orders_query->the_post(); 
+                            <?php while ($orders_query->have_posts()) : $orders_query->the_post();
                                 $total = get_post_meta(get_the_ID(), '_order_total', true);
                             ?>
                                 <div class="order-item" style="border-bottom: 1px solid #eee; padding: 15px 0; margin-bottom: 15px;">
@@ -1304,7 +1466,8 @@ function foodgo_account_shortcode() {
                                         <?php echo esc_html(get_the_content()); ?>
                                     </div>
                                 </div>
-                            <?php endwhile; wp_reset_postdata(); ?>
+                            <?php endwhile;
+                            wp_reset_postdata(); ?>
                         </div>
                     <?php else : ?>
                         <div class="empty-orders">
@@ -1316,39 +1479,170 @@ function foodgo_account_shortcode() {
                 </div>
             </div>
         </div>
-        
+
         <style>
-            .account-dashboard-container { display: flex !important; gap: 30px !important; padding: 50px !important; background: #f8f8fa !important; min-height: 70vh !important; max-width: 1200px !important; margin: 100px auto !important; border-radius: 30px !important; }
-            .account-sidebar { width: 300px; flex-shrink: 0; background: white; padding: 30px; border-radius: 24px; box-shadow: 0 15px 30px rgba(0,0,0,0.03); height: fit-content; }
-            .user-info { text-align: center !important; margin-bottom: 30px !important; padding-bottom: 20px !important; border-bottom: 1px solid #eee !important; }
-            .avatar { width: 80px !important; height: 80px !important; background: #ff4d4f !important; color: white !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 32px !important; font-weight: 700 !important; margin: 0 auto 15px !important; }
-            .user-info h4 { margin: 0; font-size: 18px; color: #333; }
-            .user-info p { color: #888; font-size: 14px; margin: 5px 0 0; word-break: break-all; }
-            .account-menu { display: flex; flex-direction: column; gap: 8px; }
-            .menu-item { padding: 14px 20px; border-radius: 12px; text-decoration: none; color: #555; font-weight: 600; transition: all 0.3s; font-size: 15px; display: flex; align-items: center; gap: 10px; }
-            .menu-item:hover, .menu-item.active { background: #fff1f0; color: #ff4d4f; }
-            .menu-item.logout { margin-top: 15px; color: #ff4d4f; border-top: 1px solid #eee; padding-top: 20px; border-radius: 0; }
-            .menu-item.logout:hover { background: none; text-decoration: underline; }
-            
-            .account-content { flex: 1; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 15px 30px rgba(0,0,0,0.03); }
-            .content-section { display: none; }
-            .content-section.active { display: block; }
-            .content-section h3 { margin-top: 0; margin-bottom: 30px; font-size: 22px; color: #333; }
-            
-            .profile-details { display: flex; flex-direction: column; gap: 20px; }
-            .detail-row { display: flex; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #f5f5f5; }
-            .detail-row span { width: 150px; color: #888; flex-shrink: 0; }
-            .detail-row strong { color: #333; font-weight: 600; }
-            
-            .empty-orders { text-align: center; padding: 40px 0; }
-            .empty-orders p { color: #888; margin-bottom: 20px; }
-            
+            .account-dashboard-container {
+                display: flex !important;
+                gap: 30px !important;
+                padding: 50px !important;
+                background: #f8f8fa !important;
+                min-height: 70vh !important;
+                max-width: 1200px !important;
+                margin: 100px auto !important;
+                border-radius: 30px !important;
+            }
+
+            .account-sidebar {
+                width: 300px;
+                flex-shrink: 0;
+                background: white;
+                padding: 30px;
+                border-radius: 24px;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.03);
+                height: fit-content;
+            }
+
+            .user-info {
+                text-align: center !important;
+                margin-bottom: 30px !important;
+                padding-bottom: 20px !important;
+                border-bottom: 1px solid #eee !important;
+            }
+
+            .avatar {
+                width: 80px !important;
+                height: 80px !important;
+                background: #ff4d4f !important;
+                color: white !important;
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 32px !important;
+                font-weight: 700 !important;
+                margin: 0 auto 15px !important;
+            }
+
+            .user-info h4 {
+                margin: 0;
+                font-size: 18px;
+                color: #333;
+            }
+
+            .user-info p {
+                color: #888;
+                font-size: 14px;
+                margin: 5px 0 0;
+                word-break: break-all;
+            }
+
+            .account-menu {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .menu-item {
+                padding: 14px 20px;
+                border-radius: 12px;
+                text-decoration: none;
+                color: #555;
+                font-weight: 600;
+                transition: all 0.3s;
+                font-size: 15px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .menu-item:hover,
+            .menu-item.active {
+                background: #fff1f0;
+                color: #ff4d4f;
+            }
+
+            .menu-item.logout {
+                margin-top: 15px;
+                color: #ff4d4f;
+                border-top: 1px solid #eee;
+                padding-top: 20px;
+                border-radius: 0;
+            }
+
+            .menu-item.logout:hover {
+                background: none;
+                text-decoration: underline;
+            }
+
+            .account-content {
+                flex: 1;
+                background: white;
+                padding: 40px;
+                border-radius: 24px;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.03);
+            }
+
+            .content-section {
+                display: none;
+            }
+
+            .content-section.active {
+                display: block;
+            }
+
+            .content-section h3 {
+                margin-top: 0;
+                margin-bottom: 30px;
+                font-size: 22px;
+                color: #333;
+            }
+
+            .profile-details {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .detail-row {
+                display: flex;
+                align-items: center;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .detail-row span {
+                width: 150px;
+                color: #888;
+                flex-shrink: 0;
+            }
+
+            .detail-row strong {
+                color: #333;
+                font-weight: 600;
+            }
+
+            .empty-orders {
+                text-align: center;
+                padding: 40px 0;
+            }
+
+            .empty-orders p {
+                color: #888;
+                margin-bottom: 20px;
+            }
+
             @media (max-width: 768px) {
-                .account-dashboard-container { flex-direction: column; padding: 20px; }
-                .account-sidebar { width: 100%; }
+                .account-dashboard-container {
+                    flex-direction: column;
+                    padding: 20px;
+                }
+
+                .account-sidebar {
+                    width: 100%;
+                }
             }
         </style>
-        
+
         <script>
             document.querySelectorAll('.menu-item[data-target]').forEach(item => {
                 item.addEventListener('click', (e) => {
@@ -1360,18 +1654,46 @@ function foodgo_account_shortcode() {
                 });
             });
         </script>
-        <?php
+<?php
     }
-    
+
     return ob_get_clean();
 }
 add_shortcode('foodgo_account', 'foodgo_account_shortcode');
+
+// AJAX login handler (fallback to show errors without full reload)
+function foodgo_ajax_login_handler() {
+    // Expect POST: username, password, login_nonce
+    if (!isset($_POST['login_nonce']) || !wp_verify_nonce($_POST['login_nonce'], 'foodgo_login_nonce')) {
+        wp_send_json_error('Phiên đăng nhập không hợp lệ.');
+    }
+
+    $creds = array(
+        'user_login'    => isset($_POST['username']) ? sanitize_text_field($_POST['username']) : '',
+        'user_password' => isset($_POST['password']) ? $_POST['password'] : '',
+        'remember'      => true,
+    );
+
+    $user = wp_signon($creds, false);
+    if (is_wp_error($user)) {
+        wp_send_json_error(wp_strip_all_tags($user->get_error_message()));
+    }
+
+    wp_send_json_success();
+}
+add_action('wp_ajax_foodgo_ajax_login', 'foodgo_ajax_login_handler');
+add_action('wp_ajax_nopriv_foodgo_ajax_login', 'foodgo_ajax_login_handler');
 
 // ẨN THANH ADMIN BAR Ở GIAO DIỆN NGOÀI (FRONT-END)
 add_filter('show_admin_bar', '__return_false');
 
 // CẤU HÌNH TIỀN TỆ VNĐ CHO PLUGIN WP FOOD MANAGER
-add_filter('wpfm_currency', function() { return 'VND'; });
-add_filter('wpfm_get_price_decimals', function() { return 0; });
-add_filter('wpfm_get_price_thousand_separator', function() { return '.'; });
-
+add_filter('wpfm_currency', function () {
+    return 'VND';
+});
+add_filter('wpfm_get_price_decimals', function () {
+    return 0;
+});
+add_filter('wpfm_get_price_thousand_separator', function () {
+    return '.';
+});

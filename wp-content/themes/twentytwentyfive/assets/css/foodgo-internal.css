@@ -1,12 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Poppins:wght@300;400;500;600;700&display=swap');
-
 /* ======================================================= */
 /* ABOUT PAGE - PATRICK HAND & POPPINS STYLE (WARM & CHILL) */
 /* ======================================================= */
 
 .about-page-wrapper {
     background: #f7f4f1 !important;
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     color: #2b2b2b !important;
     padding: 120px 0 60px 0 !important; /* Đẩy xuống để không bị header đè */
     width: 100% !important;
@@ -40,7 +38,7 @@
 
 .about-section .title {
     font-size: 58px !important;
-    font-family: 'Patrick Hand', cursive !important;
+    font-family: 'Patrick Hand', cursive, sans-serif !important;
     margin-bottom: 25px !important;
     color: #2d211c !important;
     font-weight: normal !important;
@@ -99,7 +97,7 @@
 .about-feature-box h3 {
     font-size: 28px !important;
     margin-bottom: 10px !important;
-    font-family: 'Patrick Hand', cursive !important;
+    font-family: 'Patrick Hand', cursive, sans-serif !important;
     color: #2d211c !important;
     font-weight: normal !important;
 }
@@ -121,7 +119,7 @@
 
 .about-visit-section h2 {
     font-size: 45px !important;
-    font-family: 'Patrick Hand', cursive !important;
+    font-family: 'Patrick Hand', cursive, sans-serif !important;
     color: #2d211c !important;
     margin-bottom: 15px !important;
     font-weight: normal !important;
@@ -132,7 +130,7 @@
 }
 
 .about-visit-section .visit-brand {
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     font-weight: 800 !important;
     color: #ff4d4f !important;
     margin-left: 12px !important;
@@ -153,7 +151,7 @@
 .about-visit-section .visit-subtitle {
     display: block !important;
     font-size: 55px !important;
-    font-family: cursive !important;
+    font-family: 'Patrick Hand', cursive, sans-serif !important;
     color: #8d6757 !important;
     margin-bottom: 40px !important;
 }
@@ -175,7 +173,7 @@
     font-size: 45px !important;
     color: #8d6757 !important;
     line-height: 1 !important;
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     margin: 0 !important;
     font-weight: 700 !important;
 }
@@ -184,7 +182,7 @@
     color: #8d6757 !important;
     font-size: 22px !important;
     margin-top: 10px !important;
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     margin-bottom: 0 !important;
 }
 
@@ -195,7 +193,7 @@
     padding: 18px 45px !important;
     border-radius: 8px !important;
     font-size: 26px !important;
-    font-family: 'Patrick Hand', cursive !important;
+    font-family: 'Patrick Hand', cursive, sans-serif !important;
     transition: all 0.3s ease !important;
     border: none !important;
     cursor: pointer !important;
@@ -223,7 +221,7 @@
 }
 
 .about-footer-menu a {
-    font-family: 'Patrick Hand', cursive !important;
+    font-family: 'Patrick Hand', cursive, sans-serif !important;
     font-size: 28px !important;
     color: #2d211c !important;
     text-decoration: none !important;
