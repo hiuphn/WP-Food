@@ -63,6 +63,141 @@ body.admin-bar header {
     line-height: 1;
 }
 
+/* NAV RIGHT CONTAINER */
+.nav-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+}
+
+/* HAMBURGER BUTTON STYLE */
+.hamburger-btn {
+    display: none !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 26px !important;
+    height: 18px !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    z-index: 1002 !important;
+    outline: none !important;
+}
+
+.hamburger-btn span {
+    display: block !important;
+    width: 100% !important;
+    height: 2.5px !important;
+    background-color: #111 !important;
+    border-radius: 4px !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform-origin: left center !important;
+}
+
+/* Hamburger animations */
+.hamburger-btn.active span:nth-child(1) {
+    transform: rotate(45deg) !important;
+    position: relative !important;
+    top: -1px !important;
+    left: 3px !important;
+    background-color: #ff4d4f !important;
+}
+
+.hamburger-btn.active span:nth-child(2) {
+    width: 0% !important;
+    opacity: 0 !important;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) !important;
+    position: relative !important;
+    top: 1px !important;
+    left: 3px !important;
+    background-color: #ff4d4f !important;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 991px) {
+    .hamburger-btn {
+        display: flex !important;
+    }
+    
+    .logo {
+        font-size: 26px !important;
+    }
+    
+    .menu {
+        position: fixed !important;
+        top: 80px !important;
+        right: -100% !important;
+        width: 280px !important;
+        height: calc(100vh - 80px) !important;
+        background: rgba(255, 255, 255, 0.96) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 0 !important;
+        padding: 30px !important;
+        box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.04) !important;
+        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        z-index: 1000 !important;
+        border-left: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    .menu.active {
+        right: 0 !important;
+    }
+    
+    .menu a {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #111 !important;
+        width: 100% !important;
+        padding: 16px 0 !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .menu a:hover {
+        color: #ff4d4f !important;
+        padding-left: 6px !important;
+    }
+    
+    /* Bù trừ chiều cao cho WP Admin Bar khi đăng nhập */
+    body.admin-bar .menu {
+        top: 112px !important;
+        height: calc(100vh - 112px) !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .navbar {
+        height: 70px !important;
+    }
+    
+    .logo {
+        font-size: 24px !important;
+    }
+    
+    .nav-right .btn {
+        display: none !important; /* Ẩn nút "Đặt Ngay" phụ trên các điện thoại siêu nhỏ */
+    }
+    
+    .menu {
+        top: 70px !important;
+        height: calc(100vh - 70px) !important;
+        width: 250px !important;
+    }
+    
+    body.admin-bar .menu {
+        top: 102px !important;
+        height: calc(100vh - 102px) !important;
+    }
+}
+
 /* FOOTER */
 footer {
     background: #111 !important;
