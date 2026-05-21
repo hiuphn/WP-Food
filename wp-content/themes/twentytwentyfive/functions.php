@@ -1454,7 +1454,7 @@ function foodgo_account_shortcode()
                             <?php while ($orders_query->have_posts()) : $orders_query->the_post();
                                 $total = get_post_meta(get_the_ID(), '_order_total', true);
                             ?>
-                                <div class="order-item" style="border-bottom: 1px solid #eee; padding: 15px 0; margin-bottom: 15px;">
+                                <div class="order-item" style="border-bottom: 1px solid #eee; padding: 15px 0 !important; margin-bottom: 15px;">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <strong style="font-size: 16px;"><?php the_title(); ?></strong>
                                         <span style="color: #ff4d4f; font-weight: 700; font-size: 16px;"><?php echo number_format($total, 0, ',', '.'); ?>đ</span>
@@ -1539,11 +1539,12 @@ function foodgo_account_shortcode()
             .account-menu {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                padding: 15px 20px !important;
+                gap: 15px;
             }
 
             .menu-item {
-                padding: 14px 20px;
+                padding: 10px 20px !important;
                 border-radius: 12px;
                 text-decoration: none;
                 color: #555;
@@ -1577,7 +1578,7 @@ function foodgo_account_shortcode()
             .account-content {
                 flex: 1;
                 background: white;
-                padding: 40px;
+                padding: 40px !important;
                 border-radius: 24px;
                 box-shadow: 0 15px 30px rgba(0, 0, 0, 0.03);
             }
