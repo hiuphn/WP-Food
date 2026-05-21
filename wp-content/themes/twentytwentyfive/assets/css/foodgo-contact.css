@@ -25,11 +25,14 @@
 }
 
 .foodgo-contact-page .container {
-    max-width: 1300px;
-    margin: auto;
-    padding: 0 20px;
+    width: 100% !important;
+    max-width: 1300px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0 20px !important;
     margin-top: 110px !important;
     margin-bottom: 30px !important;
+    box-sizing: border-box !important;
 }
 
 /* GLASS */
@@ -54,7 +57,7 @@
 /* LEFT FORM */
 .foodgo-contact-page .contact-form-wrapper {
     border-radius: 36px;
-    padding: 60px;
+    padding: 30px !important;
     position: relative;
     overflow: hidden;
 }
@@ -207,7 +210,7 @@
 .foodgo-contact-page .contact-info-card,
 .foodgo-contact-page .social-card {
     border-radius: 32px;
-    padding: 40px;
+    padding: 40px !important;
 }
 
 .foodgo-contact-page .contact-info-card h2,
