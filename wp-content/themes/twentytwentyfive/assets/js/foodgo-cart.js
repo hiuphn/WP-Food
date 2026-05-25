@@ -142,12 +142,192 @@ console.log("🚀 FoodGo Cart Engine: Loading...");
             });
         }
 
-        // 5. Lắng nghe sự kiện "Thêm vào giỏ" ở trang chủ
+        // 5. Trình xử lý thêm vào giỏ hàng cốt lõi
+        function performAddToCart(addBtn, nameOverride = null, priceOverride = null, qtyOverride = null) {
+            try {
+                const foodCard = addBtn.closest('.food-card') || 
+                                 addBtn.closest('.wp-block-column') || 
+                                 addBtn.parentElement.parentElement;
+                
+                const imgEl = foodCard ? foodCard.querySelector('img') : null;
+                const image = addBtn.dataset.image || (imgEl ? imgEl.src : '');
+                
+                const name = nameOverride || addBtn.dataset.name;
+                const price = priceOverride !== null ? priceOverride : parseInt(addBtn.dataset.price);
+                const quantity = qtyOverride !== null ? qtyOverride : 1;
+                
+                if (!name || isNaN(price) || price === 0) {
+                    console.error('❌ Lỗi: Không lấy được thông tin món ăn');
+                    return;
+                }
+                
+                console.log('📦 Đang thêm:', name, price.toLocaleString('vi-VN') + 'đ');
+                
+                const existingItem = cart.find(item => item.name === name);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({ name, price, image, quantity: quantity });
+                }
+                
+                // Phản hồi nút bấm
+                const originalHTML = addBtn.innerHTML;
+                addBtn.innerHTML = 'Thành công! ✓';
+                const originalBG = addBtn.style.backgroundColor;
+                const originalColor = addBtn.style.color;
+                addBtn.style.backgroundColor = '#27ae60';
+                addBtn.style.color = '#fff';
+                
+                setTimeout(() => {
+                    addBtn.innerHTML = originalHTML;
+                    addBtn.style.backgroundColor = originalBG;
+                    addBtn.style.color = originalColor;
+                }, 1000);
+                
+                updateUI();
+                
+                // Hiển thị thông báo Toast sang trọng
+                if (window.Swal) {
+                    window.Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Đã thêm ' + name + ' vào giỏ hàng!',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                }
+            } catch (err) {
+                console.error('❌ Lỗi thêm vào giỏ hàng:', err);
+            }
+        }
+
+        // Trình lấy và hiển thị Modal Chọn Size AJAX
+        function openQuickAddModal(productId, addBtn) {
+            if (!productId) return;
+            
+            const originalHTML = addBtn.innerHTML;
+            addBtn.innerHTML = 'Đang tải...';
+            
+            const formData = new FormData();
+            formData.append('action', 'foodgo_get_product_options');
+            formData.append('product_id', productId);
+            
+            fetch(foodgo_vars.ajax_url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                addBtn.innerHTML = originalHTML;
+                
+                if (data.success) {
+                    if (data.data.has_variants) {
+                        const modal = document.getElementById('fg-quick-add-modal');
+                        const body = document.getElementById('fg-modal-body');
+                        if (modal && body) {
+                            body.innerHTML = data.data.html;
+                            modal.style.display = 'flex';
+                            
+                            initModalInteractions(modal, body, addBtn);
+                        }
+                    } else {
+                        // Không có biến thể, thêm thẳng vào giỏ
+                        performAddToCart(addBtn);
+                    }
+                } else {
+                    console.error('❌ AJAX Lỗi:', data.data);
+                    performAddToCart(addBtn);
+                }
+            })
+            .catch(err => {
+                console.error('❌ Lỗi kết nối:', err);
+                addBtn.innerHTML = originalHTML;
+                performAddToCart(addBtn);
+            });
+        }
+
+        // Tương tác trên Modal Chọn Size
+        function initModalInteractions(modal, body, addBtn) {
+            const priceEl = body.querySelector('.fg-modal-price');
+            const confirmBtn = body.querySelector('.fg-modal-add-btn');
+            const qtyInput = body.querySelector('.fg-qty-input');
+            const btnMinus = body.querySelector('.fg-qty-btn-minus');
+            const btnPlus = body.querySelector('.fg-qty-btn-plus');
+            
+            const baseRegular = parseInt(body.querySelector('.fg-modal-content-inner').dataset.baseRegular) || 0;
+            const baseSale = parseInt(body.querySelector('.fg-modal-content-inner').dataset.baseSale) || 0;
+            const originalName = body.querySelector('h3').textContent.trim();
+            
+            function updateModalPrice() {
+                let variantPriceSum = 0;
+                let selectedNames = [];
+                
+                body.querySelectorAll('.fg-variant-pill-label input:checked').forEach(input => {
+                    variantPriceSum += parseInt(input.dataset.price) || 0;
+                    selectedNames.push(input.value);
+                });
+                
+                const newRegularPrice = baseRegular + variantPriceSum;
+                const newSalePrice = baseSale > 0 ? baseSale + variantPriceSum : 0;
+                const activePrice = newSalePrice > 0 ? newSalePrice : newRegularPrice;
+                
+                priceEl.textContent = activePrice.toLocaleString('vi-VN') + '₫';
+                confirmBtn.dataset.price = activePrice;
+                
+                if (selectedNames.length > 0) {
+                    confirmBtn.dataset.name = `${originalName} (${selectedNames.join(', ')})`;
+                } else {
+                    confirmBtn.dataset.name = originalName;
+                }
+            }
+            
+            body.querySelectorAll('.fg-variant-pill-label input').forEach(input => {
+                input.addEventListener('change', updateModalPrice);
+            });
+            
+            btnMinus.onclick = function() {
+                let val = parseInt(qtyInput.value) || 1;
+                if (val > 1) {
+                    val--;
+                    qtyInput.value = val;
+                }
+            };
+            
+            btnPlus.onclick = function() {
+                let val = parseInt(qtyInput.value) || 1;
+                val++;
+                qtyInput.value = val;
+            };
+            
+            confirmBtn.onclick = function() {
+                const finalPrice = parseInt(confirmBtn.dataset.price);
+                const finalName = confirmBtn.dataset.name;
+                const finalQty = parseInt(qtyInput.value) || 1;
+                
+                performAddToCart(addBtn, finalName, finalPrice, finalQty);
+                modal.style.display = 'none';
+            };
+            
+            const closeBtn = modal.querySelector('.fg-modal-close');
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+            };
+            
+            modal.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+            
+            updateModalPrice();
+        }
+
+        // Lắng nghe click toàn cục
         document.addEventListener('click', function(e) {
-            // Tìm nút theo CLASS hoặc theo CHỮ bên trong nút
             let addBtn = e.target.closest('.add-to-cart');
             
-            // Nếu không tìm thấy class, thử tìm theo nội dung chữ
             if (!addBtn) {
                 const potentialBtn = e.target.closest('.btn') || e.target.closest('button') || e.target.closest('p');
                 if (potentialBtn && potentialBtn.textContent.includes('Đặt món')) {
@@ -157,79 +337,27 @@ console.log("🚀 FoodGo Cart Engine: Loading...");
 
             if (addBtn) {
                 e.preventDefault();
-                console.log('🎯 Hệ thống: Đã nhận diện lệnh Đặt món!');
+                console.log('🎯 Hệ thống: Nhấp chọn Đặt món!');
                 
-                // Tìm khung chứa món ăn (linh hoạt hơn)
-                const foodCard = addBtn.closest('.food-card') || 
-                                 addBtn.closest('.wp-block-column') || 
-                                 addBtn.parentElement.parentElement;
+                const isDetailPage = addBtn.closest('.fg-product-layout');
+                const productId = addBtn.dataset.id;
                 
-                if (!foodCard) {
-                    console.error('❌ Lỗi: Không tìm thấy khung chứa món ăn (food-card)');
-                    return;
-                }
-
-                try {
-                    // Tìm tên và giá (thử nhiều kiểu selector khác nhau)
-                    const nameEl = foodCard.querySelector('h1, h2, h3, h4, .food-title');
-                    const priceEl = foodCard.querySelector('.price, .cart-price, span[style*="color"]');
-                    const imgEl = foodCard.querySelector('img');
-
-                    // Ưu tiên lấy dữ liệu từ data attributes của nút bấm
-                    const name = addBtn.dataset.name || (nameEl ? nameEl.textContent.trim() : '');
-                    let price = 0;
+                if (isDetailPage) {
+                    // Tại trang chi tiết: Thêm trực tiếp với các lựa chọn đã tích sẵn
+                    const name = addBtn.dataset.name;
+                    const price = parseInt(addBtn.dataset.price);
                     
-                    if (addBtn.dataset.price) {
-                        price = parseInt(addBtn.dataset.price);
-                    } else if (priceEl) {
-                        let priceText = priceEl.textContent.toUpperCase();
-                        if (priceText.includes('K')) {
-                            price = parseInt(priceText.replace(/[^0-9]/g, '')) * 1000;
-                        } else {
-                            price = parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
-                        }
-                    }
-
-                    const image = addBtn.dataset.image || (imgEl ? imgEl.src : '');
-
-                    if (!name || isNaN(price) || price === 0) {
-                        console.error('❌ Lỗi: Không lấy được thông tin món ăn từ:', foodCard);
-                        return;
-                    }
-
-                    console.log('📦 Đang thêm:', name, price.toLocaleString('vi-VN') + 'đ');
-
-                    // Tìm số lượng (nếu có input)
-                    const qtyInput = foodCard.querySelector('input[type="text"]') || foodCard.querySelector('input[type="number"]');
-                    const quantity = qtyInput ? parseInt(qtyInput.value) : 1;
-
-                    // Kiểm tra xem món đã có trong giỏ chưa
-                    const existingItem = cart.find(item => item.name === name);
-                    if (existingItem) {
-                        existingItem.quantity += quantity;
-                    } else {
-                        cart.push({ name, price, image, quantity: quantity });
-                    }
-
-                    // Hiệu ứng phản hồi cho người dùng
-                    const originalHTML = addBtn.innerHTML;
-                    addBtn.innerHTML = 'Thành công! ✓';
-                    addBtn.style.backgroundColor = '#27ae60';
-                    addBtn.style.color = '#fff';
+                    const qtyInput = addBtn.closest('.fg-product-layout').querySelector('.fg-quantity input');
+                    const qty = qtyInput ? parseInt(qtyInput.value) : 1;
                     
-                    setTimeout(() => {
-                        addBtn.innerHTML = originalHTML;
-                        addBtn.style.backgroundColor = '';
-                        addBtn.style.color = '';
-                    }, 1000);
-
-                    updateUI();
-                } catch (err) {
-                    console.error('❌ Lỗi hệ thống:', err);
+                    performAddToCart(addBtn, name, price, qty);
+                } else {
+                    // Tại danh sách ngoài: Gọi AJAX kiểm tra và hiển thị modal
+                    openQuickAddModal(productId, addBtn);
                 }
             }
 
-            // Xử lý nút thanh toán (Chuyển hướng sang trang checkout)
+            // Xử lý nút thanh toán
             if (e.target.closest('#checkout-btn')) {
                 if (cart.length === 0) {
                     alert('Giỏ hàng của bạn đang trống!');
